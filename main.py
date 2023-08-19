@@ -46,7 +46,7 @@ class Obstacle(pygame.sprite.Sprite):
         super().__init__()
         self.pos = pos
         self.image = image
-        self.rect = self.image.get_rect(center = self.pos)
+        self.rect = self.image.get_rect(topleft = self.pos)
     
     def render(self):
         screen.blit(self.image, self.rect)
@@ -101,8 +101,9 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if pygame.mouse.get_pressed()[0] and pygame.time.get_ticks() - start_time > placeSpeedLimit:
-            placeObst('box', pygame.mouse.get_pos())
-            start_time = pygame.time.get_ticks()    
+            placeObst('box', calcGridCellCorner(pygame.mouse.get_pos()))
+            # place limit
+            # start_time = pygame.time.get_ticks()    
         
             
     # Drawing order
@@ -114,8 +115,7 @@ while running:
     cell_group.draw(screen)
     
     pygame.draw.circle(screen,'Red',pygame.mouse.get_pos(),5)
-    pygame.draw.circle(screen,'Blue',calcGridCellCorner(pygame.mouse.get_pos()),3)
-    print(calcGridCellCorner(pygame.mouse.get_pos()))
+
     
     pygame.display.flip()
     clock.tick(60)
