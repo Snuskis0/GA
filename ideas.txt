@@ -1,0 +1,5 @@
+Make "aroundBlocks" class (blocksaround.north etc)
+Make blocks adapt their name in case of blocks around them (Maybe change filepath?)
+Make "Map" class, containing the map, save methods etc
+Expand Editor class
+Make all coordinates relative to editor / map origo (Stored in map?)
