@@ -56,32 +56,95 @@ class Box(Obstacle):
         self.image = pygame.image.load('Graphics/Tiles/box.png')
         self.image = pygame.transform.scale(self.image,(64,64))
         super().__init__(pos, self.image)
-        
+
+class Grass(Obstacle):
+    def __init__(self, pos):
+        self.image = pygame.image.load('Graphics/Tiles/grass.png')
+        self.image = pygame.transform.scale(self.image,(blockW, blockH))
+        super().__init__(pos, self.image)        
 
 # Functions
-
-def createCell(pos):
-    cell_group.add(ObstacleCell(pos))
-
-# useless code, kept for now
-# def createCellFill():
-#     # simple for now
-#     # print(screenX/blockW, screenY/blockH)
-#     for i in range(int(screenX/blockW)):
-#         for j in range(int(screenY/blockH)):
-#             createCell((i*blockW, j*blockH))
 
 def placeObst(obst, pos):
     if obst == 'box':
         obst_list.add(Box(pos))
+    if obst == 'grass':
+        obst_list.add(Grass(pos))
 
 def calcGridCellCorner(pos):
     # calcs cornerPos for a given position (check whiteboard for better explaination)
     x = pos[0]
     y = pos[1]
     return (int(x/blockW)*blockW,int(y/blockH)*blockH)
-    
 
+def getBlockOneUp(pos):
+    x = pos[0]
+    y = pos[1]
+    for block in obst_list:
+        if block.rect.collidepoint((x, y-blockH)):
+            return block
+    return 'Air'
+
+def getBlockOneDown(pos):
+    x = pos[0]
+    y = pos[1]
+    for block in obst_list:
+        if block.rect.collidepoint((x, y+blockH)):
+            return block
+    return 'Air'
+
+def getBlockOneLeft(pos):
+    x = pos[0]
+    y = pos[1]
+    for block in obst_list:
+        if block.rect.collidepoint((x-blockW, y)):
+            return block
+    return 'Air'
+
+def getBlockOneRight(pos):
+    x = pos[0]
+    y = pos[1]
+    for block in obst_list:
+        if block.rect.collidepoint((x+blockW, y-blockH)):
+            return block
+    return 'Air'
+
+def getBlocksOneAround(pos):
+    #implement later
+    pass
+
+def getBlockAtMouse():
+    mouseX = pygame.mouse.get_pos()[0]
+    mouseY = pygame.mouse.get_pos()[1]
+    for block in obst_list:
+        if block.rect.collidepoint((mouseX, mouseY)):
+            return block
+    return 'Air'
+
+
+def checkifSameBlocksAroundMouse():
+    mouseX = pygame.mouse.get_pos()[0]
+    mouseY = pygame.mouse.get_pos()[1]
+    
+    up = False
+    down = False
+    left = False
+    right = False
+    
+    # is probably faster than calling "GetBlockOneXY", implement a function that runs the code in the for loop (4x faster, looks better in code)
+    for block in obst_list:
+        if block.rect.collidepoint((mouseX, mouseY-blockH)) and block.__class__.__name__ == getBlockAtMouse().__class__.__name__:
+            up = True
+        if block.rect.collidepoint((mouseX, mouseY+blockH)) and block.__class__.__name__ == getBlockAtMouse().__class__.__name__:
+            down = True
+        if block.rect.collidepoint((mouseX-blockW, mouseY)) and block.__class__.__name__ == getBlockAtMouse().__class__.__name__:
+            left = True
+        if block.rect.collidepoint((mouseX+blockW, mouseY)) and block.__class__.__name__ == getBlockAtMouse().__class__.__name__:
+            right = True
+    
+    return up, down, left, right
+        
+  
 # Setup
 pygame.init()
 screen = pygame.display.set_mode((screenX, screenY))
@@ -91,7 +154,6 @@ start_time = 0
 editorOrigo = (editorX, editorY)
 editor = Editor(editorOrigo)
 
-cell_group = pygame.sprite.Group()
 obst_list = pygame.sprite.Group()
 
 # Main
@@ -100,21 +162,25 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if pygame.mouse.get_pressed()[0] and pygame.time.get_ticks() - start_time > placeSpeedLimit:
+        if pygame.mouse.get_pressed()[0] and pygame.time.get_ticks() - start_time > placeSpeedLimit and getBlockAtMouse() == 'Air':
             placeObst('box', calcGridCellCorner(pygame.mouse.get_pos()))
             # place limit
             # start_time = pygame.time.get_ticks()    
-        
-            
+        if pygame.mouse.get_pressed()[2] and pygame.time.get_ticks() - start_time > placeSpeedLimit and getBlockAtMouse() == 'Air':
+            placeObst('grass', calcGridCellCorner(pygame.mouse.get_pos()))
+            # place limit
+            # start_time = pygame.time.get_ticks()    
+        if pygame.mouse.get_pressed()[1]  and getBlockAtMouse() != 'Air':
+            getBlockAtMouse().kill()
+    print(getBlockOneUp((pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1])).__class__.__name__)
     # Drawing order
     screen.fill('White')
     editor.render()
 
     editor.showGrid()
     obst_list.draw(screen)
-    cell_group.draw(screen)
     
-    pygame.draw.circle(screen,'Red',pygame.mouse.get_pos(),5)
+    # pygame.draw.circle(screen,'Red',pygame.mouse.get_pos(),5)
 
     
     pygame.display.flip()
