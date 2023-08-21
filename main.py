@@ -18,9 +18,6 @@ class Editor():
     def setBgSize(self, size):
         self.background = pygame.transform.scale(self.background, size)
     
-    def update(self):
-        pass
-    
     def showGrid(self):
         x = int(pygame.display.get_window_size()[0] / blockW)
         y = int(pygame.display.get_window_size()[1] / blockH)
@@ -29,17 +26,6 @@ class Editor():
             for j in range(y):
                 pygame.draw.line(screen,'black',(0,j*blockW),(x*blockW,j*blockH))
                 pygame.draw.line(screen,'black',(i*blockW,0),(i*blockW,y*blockH))
-                
-class ObstacleCell(pygame.sprite.Sprite):
-    def __init__(self, pos):
-        super().__init__()
-        self.image = pygame.image.load('Graphics/Tiles/dirt.png') # does not show later
-        self.image = pygame.transform.scale(self.image,(64,64))
-        self.rect = self.image.get_rect(topleft = pos)
-    
-    def render(self):
-        screen.blit(self.image, self.rect)
-
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, pos, image):
@@ -48,8 +34,6 @@ class Obstacle(pygame.sprite.Sprite):
         self.image = image
         self.rect = self.image.get_rect(topleft = self.pos)
     
-    def render(self):
-        screen.blit(self.image, self.rect)
         
 class Box(Obstacle):
     def __init__(self, pos):
@@ -147,8 +131,7 @@ def checkifSameBlocksAroundMouseBlock():
     down = False
     left = False
     right = False
-    
-    # is probably faster than calling "GetBlockOneXY", implement a function that runs the code in the for loop (4x faster, looks better in code)
+
     blocksAround = getBlocksOneAround((mouseX, mouseY))
     mouseBlock = getBlockAtMouse().__class__.__name__
     if blocksAround[0].__class__.__name__ == mouseBlock:
@@ -180,19 +163,14 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if pygame.mouse.get_pressed()[0] and pygame.time.get_ticks() - start_time > placeSpeedLimit and getBlockAtMouse() == 'Air':
+        if pygame.mouse.get_pressed()[0] and getBlockAtMouse() == 'Air':
             placeObst('box', calcGridCellCorner(pygame.mouse.get_pos()))
-            # place limit
-            # start_time = pygame.time.get_ticks()    
-        if pygame.mouse.get_pressed()[2] and pygame.time.get_ticks() - start_time > placeSpeedLimit and getBlockAtMouse() == 'Air':
+               
+        if pygame.mouse.get_pressed()[2] and getBlockAtMouse() == 'Air':
             placeObst('grass', calcGridCellCorner(pygame.mouse.get_pos()))
-            # place limit
-            # start_time = pygame.time.get_ticks()    
-        if pygame.mouse.get_pressed()[1]  and getBlockAtMouse() != 'Air':
+         
+        if pygame.mouse.get_pressed()[1] and getBlockAtMouse() != 'Air':
             getBlockAtMouse().kill()
-    
-    # print(getBlockOneUp((pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1])).__class__.__name__)
-    print (checkifSameBlocksAroundMouseBlock())
     
     # Drawing order
     screen.fill('White')
@@ -200,9 +178,6 @@ while running:
     
     editor.showGrid()
     obst_list.draw(screen)
-    
-    # pygame.draw.circle(screen,'Red',pygame.mouse.get_pos(),5)
-
     
     pygame.display.flip()
     clock.tick(60)
