@@ -110,8 +110,25 @@ def getBlockOneRight(pos):
     return 'Air'
 
 def getBlocksOneAround(pos):
-    #implement later
-    pass
+    # Returns block objects in order: Up, Down, Left, Right
+    up = 'Air'
+    down = 'Air'
+    left = 'Air'
+    right = 'Air'
+    x = pos[0]
+    y = pos[1]
+    
+    
+    for block in obst_list:
+        if block.rect.collidepoint((x, y-blockH)):
+            up = block
+        if block.rect.collidepoint((x, y+blockH)):
+            down = block
+        if block.rect.collidepoint((x-blockW, y)):
+            left = block
+        if block.rect.collidepoint((x+blockW, y)):
+            right = block
+    return [up, down, left, right]
 
 def getBlockAtMouse():
     mouseX = pygame.mouse.get_pos()[0]
@@ -122,7 +139,7 @@ def getBlockAtMouse():
     return 'Air'
 
 
-def checkifSameBlocksAroundMouse():
+def checkifSameBlocksAroundMouseBlock():
     mouseX = pygame.mouse.get_pos()[0]
     mouseY = pygame.mouse.get_pos()[1]
     
@@ -132,15 +149,16 @@ def checkifSameBlocksAroundMouse():
     right = False
     
     # is probably faster than calling "GetBlockOneXY", implement a function that runs the code in the for loop (4x faster, looks better in code)
-    for block in obst_list:
-        if block.rect.collidepoint((mouseX, mouseY-blockH)) and block.__class__.__name__ == getBlockAtMouse().__class__.__name__:
-            up = True
-        if block.rect.collidepoint((mouseX, mouseY+blockH)) and block.__class__.__name__ == getBlockAtMouse().__class__.__name__:
-            down = True
-        if block.rect.collidepoint((mouseX-blockW, mouseY)) and block.__class__.__name__ == getBlockAtMouse().__class__.__name__:
-            left = True
-        if block.rect.collidepoint((mouseX+blockW, mouseY)) and block.__class__.__name__ == getBlockAtMouse().__class__.__name__:
-            right = True
+    blocksAround = getBlocksOneAround((mouseX, mouseY))
+    mouseBlock = getBlockAtMouse().__class__.__name__
+    if blocksAround[0].__class__.__name__ == mouseBlock:
+        up = True
+    if blocksAround[1].__class__.__name__ == mouseBlock:
+        down = True
+    if blocksAround[2].__class__.__name__ == mouseBlock:
+        left = True
+    if blocksAround[3].__class__.__name__ == mouseBlock:
+        right = True
     
     return up, down, left, right
         
@@ -172,11 +190,14 @@ while running:
             # start_time = pygame.time.get_ticks()    
         if pygame.mouse.get_pressed()[1]  and getBlockAtMouse() != 'Air':
             getBlockAtMouse().kill()
-    print(getBlockOneUp((pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1])).__class__.__name__)
+    
+    # print(getBlockOneUp((pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1])).__class__.__name__)
+    print (checkifSameBlocksAroundMouseBlock())
+    
     # Drawing order
     screen.fill('White')
     editor.render()
-
+    
     editor.showGrid()
     obst_list.draw(screen)
     
