@@ -3,7 +3,6 @@ import pygame
 from config import *
 import os
 
-os.system('cls')
 
 # Classes
 class Editor():
@@ -49,19 +48,19 @@ class Grass(Obstacle):
         super().__init__(pos, self.image)        
 
     def update(self):
-        blocks = checkIfSameBlocksAround(self.pos)
+        blocks = checkIfBlocksAround(self.pos)
         up = blocks[0]
         down = blocks[1]
         left = blocks[2]
         right = blocks[3]
         
-        sameBlocksAroundCount = howManyTrueIn(blocks)
+        BlocksAroundCount = howManyTrueIn(blocks)
         #long, can't think of a faster / better way
         #Maybe divide material name and form into 2?
         #Looks awfull
         #add update when delete blocks too
         #Missing textures for topleft/right, might delete corners (make own graphic) if I ever feel like it
-        if sameBlocksAroundCount == 1:
+        if BlocksAroundCount == 1:
             if right:
                 self.filename = 'grassLeft.png'
             if left:
@@ -69,8 +68,8 @@ class Grass(Obstacle):
             if up:
                 self.filename = 'grassCenter.png'
             if down:
-                self.filename = 'grass.png'
-        if sameBlocksAroundCount == 2: 
+                self.filename = 'grassMid.png'
+        if BlocksAroundCount == 2: 
             if up and down:
                 self.filename = 'grassCenter.png'
             if up and left:
@@ -83,7 +82,7 @@ class Grass(Obstacle):
                 self.filename = 'grassMid.png'
             if left and right:
                 self.filename = 'grassMid.png'
-        if sameBlocksAroundCount == 3:
+        if BlocksAroundCount == 3:
             if up and down and left:
                 self.filename = 'grassCenter.png'
             if up and down and right:
@@ -94,6 +93,9 @@ class Grass(Obstacle):
                 self.filename = 'grassMid.png'    
         if up and down and left and right:
             self.filename = 'grassCenter.png'   
+        
+        #git config --global user.email "simosk685@edu.linkoping.se"
+        #git config --global user.name "Snuskhummer0"
         
         #updates img of instance
         self.image = pygame.image.load(f'Graphics/Tiles/{self.filename}')
@@ -196,16 +198,32 @@ def getBlockAtPos(pos):
             return block
     return 'Air'
 
-def checkIfSameBlocksAround(pos):
-    x = pos[0]
-    y = pos[1]
-        
+def checkIfBlocksAround(pos):
+    blocksAround = getBlocksOneAround(pos)
+    
+    up = False
+    down = False
+    left = False
+    right = False
+    
+    if blocksAround[0] != 'Air':
+        up = True
+    if blocksAround[1] != 'Air':
+        down = True
+    if blocksAround[2] != 'Air':
+        left = True
+    if blocksAround[3] != 'Air':
+        right = True
+    
+    return [up, down, left, right]
+    
+def checkIfSameBlocksAround(pos):        
     up = False
     down = False
     left = False
     right = False
 
-    blocksAround = getBlocksOneAround((x, y))
+    blocksAround = getBlocksOneAround(pos)
     posBlock = getBlockAtMouse().__class__.__name__
     if blocksAround[0].__class__.__name__ == posBlock:
         up = True
