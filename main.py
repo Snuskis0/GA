@@ -2,6 +2,7 @@
 import pygame
 from config import *
 import os
+import json
 
 
 # Classes
@@ -25,6 +26,29 @@ class Editor():
             for j in range(y):
                 pygame.draw.line(screen,'black',(0,j*blockW),(x*blockW,j*blockH))
                 pygame.draw.line(screen,'black',(i*blockW,0),(i*blockW,y*blockH))
+    
+    def placeObst(obst, pos):
+        if obst == 'box':
+            map.blocks.add(Box(pos))
+        if obst == 'grass':
+            map.blocks.add(Grass(pos))
+        #updates blocks around and self
+        blocksAround = getBlocksOneAround(pos)
+        placedBlock = getBlockAtPos(pos)
+        placedBlock.update()
+        for block in blocksAround:
+            if block != 'Air':
+                block.update()
+
+class Map():
+    def __init__(self):
+        self.blocks = pygame.sprite.Group()
+    
+    def save(self):
+        json.dumps(self.blocks)
+    
+    def load():
+        pass
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, pos, image):
@@ -94,9 +118,6 @@ class Grass(Obstacle):
         if up and down and left and right:
             self.filename = 'grassCenter.png'   
         
-        #git config --global user.email "simosk685@edu.linkoping.se"
-        #git config --global user.name "Snuskhummer0"
-        
         #updates img of instance
         self.image = pygame.image.load(f'Graphics/Tiles/{self.filename}')
 
@@ -111,9 +132,9 @@ def howManyTrueIn(list):
 
 def placeObst(obst, pos):
     if obst == 'box':
-        obst_list.add(Box(pos))
+        map.blocks.add(Box(pos))
     if obst == 'grass':
-        obst_list.add(Grass(pos))
+        map.blocks.add(Grass(pos))
     #updates blocks around and self
     blocksAround = getBlocksOneAround(pos)
     placedBlock = getBlockAtPos(pos)
@@ -131,7 +152,7 @@ def calcGridCellCorner(pos):
 def getBlockOneUp(pos):
     x = pos[0]
     y = pos[1]
-    for block in obst_list:
+    for block in map.blocks:
         if block.rect.collidepoint((x, y-blockH)):
             return block
     return 'Air'
@@ -139,7 +160,7 @@ def getBlockOneUp(pos):
 def getBlockOneDown(pos):
     x = pos[0]
     y = pos[1]
-    for block in obst_list:
+    for block in map.blocks:
         if block.rect.collidepoint((x, y+blockH)):
             return block
     return 'Air'
@@ -147,7 +168,7 @@ def getBlockOneDown(pos):
 def getBlockOneLeft(pos):
     x = pos[0]
     y = pos[1]
-    for block in obst_list:
+    for block in map.blocks:
         if block.rect.collidepoint((x-blockW, y)):
             return block
     return 'Air'
@@ -155,7 +176,7 @@ def getBlockOneLeft(pos):
 def getBlockOneRight(pos):
     x = pos[0]
     y = pos[1]
-    for block in obst_list:
+    for block in map.blocks:
         if block.rect.collidepoint((x+blockW, y-blockH)):
             return block
     return 'Air'
@@ -170,7 +191,7 @@ def getBlocksOneAround(pos):
     y = pos[1]
     
     
-    for block in obst_list:
+    for block in map.blocks:
         if block.rect.collidepoint((x, y-blockH)):
             up = block
         if block.rect.collidepoint((x, y+blockH)):
@@ -185,7 +206,7 @@ def getBlocksOneAround(pos):
 def getBlockAtMouse():
     mouseX = pygame.mouse.get_pos()[0]
     mouseY = pygame.mouse.get_pos()[1]
-    for block in obst_list:
+    for block in map.blocks:
         if block.rect.collidepoint((mouseX, mouseY)):
             return block
     return 'Air'
@@ -193,7 +214,7 @@ def getBlockAtMouse():
 def getBlockAtPos(pos):
     x = pos[0]
     y = pos[1]
-    for block in obst_list:
+    for block in map.blocks:
         if block.rect.collidepoint((x, y)):
             return block
     return 'Air'
@@ -262,12 +283,12 @@ def checkifSameBlocksAroundMouseBlock():
 pygame.init()
 screen = pygame.display.set_mode((screenX, screenY))
 clock = pygame.time.Clock()
+
 running = True
 start_time = 0
 editorOrigo = (editorX, editorY)
+map = Map()
 editor = Editor(editorOrigo)
-
-obst_list = pygame.sprite.Group()
 
 # Main
 while running:
@@ -276,10 +297,10 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if pygame.mouse.get_pressed()[0] and getBlockAtMouse() == 'Air':
-            placeObst('box', calcGridCellCorner(pygame.mouse.get_pos()))
+            Editor.placeObst('box', calcGridCellCorner(pygame.mouse.get_pos()))
                
         if pygame.mouse.get_pressed()[2] and getBlockAtMouse() == 'Air':
-            placeObst('grass', calcGridCellCorner(pygame.mouse.get_pos()))
+            Editor.placeObst('grass', calcGridCellCorner(pygame.mouse.get_pos()))
             
          
         if pygame.mouse.get_pressed()[1] and getBlockAtMouse() != 'Air':
@@ -290,7 +311,7 @@ while running:
     editor.render()
     
     # editor.showGrid()
-    obst_list.draw(screen)
+    map.blocks.draw(screen)
     
     pygame.display.flip()
     clock.tick(60)
