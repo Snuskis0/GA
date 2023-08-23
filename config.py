@@ -10,4 +10,4 @@ blockH = 70 # 1024 / 64 = 16
 placeSpeedLimit = 100 #milliseconds
 
 # Map
-saveSpeedLimit = 20
+saveSpeedLimit = 60
