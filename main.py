@@ -313,7 +313,7 @@ while running:
          
         if pygame.mouse.get_pressed()[1] and getBlockAtMouse() != 'Air':
             getBlockAtMouse().kill()
-                    updateBlocksAround(pygame.mouse.get_pos())
+            updateBlocksAround(pygame.mouse.get_pos())
     
         if event.type == pygame.KEYDOWN:
             print(event.key, pygame.K_SPACE)
