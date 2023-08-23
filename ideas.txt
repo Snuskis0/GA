@@ -3,3 +3,4 @@ Make blocks adapt their name in case of blocks around them (Maybe change filepat
 Make "Map" class, containing the map, save methods etc
 Expand Editor class
 Make all coordinates relative to editor / map origo (Stored in map?)
+Create another subclass, halfblock and fullblock (between obst and materials in hiearchy)

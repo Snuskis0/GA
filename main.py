@@ -7,26 +7,9 @@ from enum import Enum
 
 
 # Classes
-class Editor():
-    def __init__(self, origin):
-        self.origin = origin
-        self.background = pygame.image.load('Graphics/Backgrounds/bg_grasslands.png')
-        self.rect = self.background.get_rect(topleft = (editorX, editorY))
-    
-    def render(self):
-        screen.blit(self.background, self.rect)
-        
-    def setBgSize(self, size):
-        self.background = pygame.transform.scale(self.background, size)
-    
-    def showGrid(self):
-        x = int(pygame.display.get_window_size()[0] / blockW)
-        y = int(pygame.display.get_window_size()[1] / blockH)
-        
-        for i in range(x):
-            for j in range(y):
-                pygame.draw.line(screen,'black',(0,j*blockW),(x*blockW,j*blockH))
-                pygame.draw.line(screen,'black',(i*blockW,0),(i*blockW,y*blockH))
+class Editor():    
+    def setBgSize(map, size):
+        map.background = pygame.transform.scale(map.background, size)
     
     def placeObst(obst, pos):
         if obst == 'box':
@@ -44,9 +27,21 @@ class Editor():
 class Map():
     def __init__(self):
         self.blocks = pygame.sprite.Group()
+        self.background = pygame.image.load('Graphics/Backgrounds/bg_grasslands.png')
+        self.rect = self.background.get_rect(topleft = (mapX, mapY))
+    
+    def render(self):
+        screen.blit(self.background, self.rect)
+        map.blocks.draw(screen)
+    
+    def addPosAllBlocks(self, add):
+        for block in self.blocks:
+            block.rect[0] += add[0]
+            block.rect[1] += add[1]
+            
     
     def save(self):
-        json.dumps(self.blocks)
+        pass
     
     def load():
         pass
@@ -134,6 +129,13 @@ def howManyTrueIn(list):
         if item:
             count += 1
     return count
+
+def addPos(pos1, pos2):
+    x1 = pos1[0]
+    y1 = pos1[1]
+    x2 = pos2[0]
+    y2 = pos2[1]
+    return (x1+x2,y1+y2)
 
 def placeObst(obst, pos):
     if obst == 'box':
@@ -293,13 +295,15 @@ clock = pygame.time.Clock()
 
 running = True
 start_time = 0
-editorOrigo = (editorX, editorY)
+editorOrigo = (mapX, mapY)
 map = Map()
-editor = Editor(editorOrigo)
+editor = Editor()
 saveTicker = 0
+
 
 # Main
 while running:
+    pygame.mouse.get_rel()
     keys = pygame.key.get_pressed()
     # Event loop
     for event in pygame.event.get():
@@ -309,27 +313,39 @@ while running:
             Editor.placeObst('box', calcGridCellCorner(pygame.mouse.get_pos()))
                
         if pygame.mouse.get_pressed()[2] and getBlockAtMouse() == 'Air':
-            Editor.placeObst('grass', calcGridCellCorner(pygame.mouse.get_pos()))
+            map.addPosAllBlocks(pygame.mouse.get_rel())
+        
+        if pygame.mouse.get_pressed()[2]:
+            map.addPosAllBlocks(pygame.mouse.get_rel())
          
         if pygame.mouse.get_pressed()[1] and getBlockAtMouse() != 'Air':
             getBlockAtMouse().kill()
             updateBlocksAround(pygame.mouse.get_pos())
-    
+
+        
+        
         if event.type == pygame.KEYDOWN:
-            print(event.key, pygame.K_SPACE)
-            if event.key == pygame.K_SPACE:
-                print(saveTicker)
-                if saveTicker == 0: 
-                    map.save()
-                    saveTicker = saveSpeedLimit
-                    print('Saved!')
-            
+            if event.key == pygame.K_w:
+                map.addPosAllBlocks((0,-blockH))
+        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_s:
+                map.addPosAllBlocks((0,blockH))
+        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_a:
+                map.addPosAllBlocks((-blockW,0))
+        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_d:
+                map.addPosAllBlocks((blockW,0))
+    
+    
+    
     # Drawing order
     screen.fill('White')
-    editor.render()
+    map.render()
     
-    # editor.showGrid()
-    map.blocks.draw(screen)
     
     # EndVariables
     if saveTicker > 0:
