@@ -289,9 +289,11 @@ start_time = 0
 editorOrigo = (editorX, editorY)
 map = Map()
 editor = Editor(editorOrigo)
+saveTicker = 0
 
 # Main
 while running:
+    keys = pygame.key.get_pressed()
     # Event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -301,17 +303,29 @@ while running:
                
         if pygame.mouse.get_pressed()[2] and getBlockAtMouse() == 'Air':
             Editor.placeObst('grass', calcGridCellCorner(pygame.mouse.get_pos()))
-            
          
         if pygame.mouse.get_pressed()[1] and getBlockAtMouse() != 'Air':
             getBlockAtMouse().kill()
-    
+            
+        if event.type == pygame.KEYDOWN:
+            print(event.key, pygame.K_SPACE)
+            if event.key == pygame.K_SPACE:
+                print(saveTicker)
+                if saveTicker == 0: 
+                    map.save()
+                    saveTicker = saveSpeedLimit
+                    print('Saved!')
+            
     # Drawing order
     screen.fill('White')
     editor.render()
     
     # editor.showGrid()
     map.blocks.draw(screen)
+    
+    # EndVariables
+    if saveTicker > 0:
+        saveTicker -= 1
     
     pygame.display.flip()
     clock.tick(60)
