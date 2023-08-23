@@ -2,6 +2,7 @@
 import pygame
 from config import *
 import os
+from enum import Enum
 
 os.system('cls')
 
@@ -27,26 +28,30 @@ class Editor():
                 pygame.draw.line(screen,'black',(0,j*blockW),(x*blockW,j*blockH))
                 pygame.draw.line(screen,'black',(i*blockW,0),(i*blockW,y*blockH))
 
+class Direction(Enum):
+    DEFAULT = 0
+    UP = 1
+    DOWN = 2
+    LEFT = 3
+    RIGHT = 4
+
 class Obstacle(pygame.sprite.Sprite):
-    def __init__(self, pos, image):
+    def __init__(self, pos, filename):
         super().__init__()
+        self.filename = filename
         self.pos = pos
-        self.image = image
+        self.image = pygame.image.load(f'Graphics/Tiles/{self.filename}')
+        self.image = pygame.transform.scale(self.image,(blockW,blockH))
         self.rect = self.image.get_rect(topleft = self.pos)
+        self.direction = Direction.DEFAULT
         
 class Box(Obstacle):
     def __init__(self, pos):
-        self.filename = 'box.png'
-        self.image = pygame.image.load(f'Graphics/Tiles/{self.filename}')
-        self.image = pygame.transform.scale(self.image,(blockW,blockH))
-        super().__init__(pos, self.image)
+        super().__init__(pos, 'box.png')
 
 class Grass(Obstacle):
     def __init__(self, pos):
-        self.filename = 'grass.png'
-        self.image = pygame.image.load(f'Graphics/Tiles/{self.filename}')
-        self.image = pygame.transform.scale(self.image,(blockW, blockH))
-        super().__init__(pos, self.image)        
+        super().__init__(pos, 'grass.png')        
 
     def update(self):
         blocks = checkIfSameBlocksAround(self.pos)
@@ -69,7 +74,7 @@ class Grass(Obstacle):
             if up:
                 self.filename = 'grassCenter.png'
             if down:
-                self.filename = 'grass.png'
+                self.filename = 'grassMid.png'
         if sameBlocksAroundCount == 2: 
             if up and down:
                 self.filename = 'grassCenter.png'
@@ -113,13 +118,15 @@ def placeObst(obst, pos):
     if obst == 'grass':
         obst_list.add(Grass(pos))
     #updates blocks around and self
+    getBlockAtPos(pos).update()
+    updateBlocksAround(pos)
+    
+def updateBlocksAround(pos):
     blocksAround = getBlocksOneAround(pos)
-    placedBlock = getBlockAtPos(pos)
-    placedBlock.update()
     for block in blocksAround:
         if block != 'Air':
             block.update()
-    
+
 def calcGridCellCorner(pos):
     # calcs cornerPos for a given position (check whiteboard for better explaination)
     x = pos[0]
@@ -266,6 +273,7 @@ while running:
          
         if pygame.mouse.get_pressed()[1] and getBlockAtMouse() != 'Air':
             getBlockAtMouse().kill()
+            updateBlocksAround(pygame.mouse.get_pos())
     
     # Drawing order
     screen.fill('White')
