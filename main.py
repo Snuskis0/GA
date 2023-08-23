@@ -2,9 +2,9 @@
 import pygame
 from config import *
 import os
+import json
 from enum import Enum
 
-os.system('cls')
 
 # Classes
 class Editor():
@@ -27,6 +27,29 @@ class Editor():
             for j in range(y):
                 pygame.draw.line(screen,'black',(0,j*blockW),(x*blockW,j*blockH))
                 pygame.draw.line(screen,'black',(i*blockW,0),(i*blockW,y*blockH))
+    
+    def placeObst(obst, pos):
+        if obst == 'box':
+            map.blocks.add(Box(pos))
+        if obst == 'grass':
+            map.blocks.add(Grass(pos))
+        #updates blocks around and self
+        blocksAround = getBlocksOneAround(pos)
+        placedBlock = getBlockAtPos(pos)
+        placedBlock.update()
+        for block in blocksAround:
+            if block != 'Air':
+                block.update()
+
+class Map():
+    def __init__(self):
+        self.blocks = pygame.sprite.Group()
+    
+    def save(self):
+        json.dumps(self.blocks)
+    
+    def load():
+        pass
 
 class Direction(Enum):
     DEFAULT = 0
@@ -54,19 +77,19 @@ class Grass(Obstacle):
         super().__init__(pos, 'grass.png')        
 
     def update(self):
-        blocks = checkIfSameBlocksAround(self.pos)
+        blocks = checkIfBlocksAround(self.pos)
         up = blocks[0]
         down = blocks[1]
         left = blocks[2]
         right = blocks[3]
         
-        sameBlocksAroundCount = howManyTrueIn(blocks)
+        BlocksAroundCount = howManyTrueIn(blocks)
         #long, can't think of a faster / better way
         #Maybe divide material name and form into 2?
         #Looks awfull
         #add update when delete blocks too
         #Missing textures for topleft/right, might delete corners (make own graphic) if I ever feel like it
-        if sameBlocksAroundCount == 1:
+        if BlocksAroundCount == 1:
             if right:
                 self.filename = 'grassLeft.png'
             if left:
@@ -75,7 +98,7 @@ class Grass(Obstacle):
                 self.filename = 'grassCenter.png'
             if down:
                 self.filename = 'grassMid.png'
-        if sameBlocksAroundCount == 2: 
+        if BlocksAroundCount == 2: 
             if up and down:
                 self.filename = 'grassCenter.png'
             if up and left:
@@ -88,7 +111,7 @@ class Grass(Obstacle):
                 self.filename = 'grassMid.png'
             if left and right:
                 self.filename = 'grassMid.png'
-        if sameBlocksAroundCount == 3:
+        if BlocksAroundCount == 3:
             if up and down and left:
                 self.filename = 'grassCenter.png'
             if up and down and right:
@@ -114,9 +137,9 @@ def howManyTrueIn(list):
 
 def placeObst(obst, pos):
     if obst == 'box':
-        obst_list.add(Box(pos))
+        map.blocks.add(Box(pos))
     if obst == 'grass':
-        obst_list.add(Grass(pos))
+        map.blocks.add(Grass(pos))
     #updates blocks around and self
     getBlockAtPos(pos).update()
     updateBlocksAround(pos)
@@ -136,7 +159,7 @@ def calcGridCellCorner(pos):
 def getBlockOneUp(pos):
     x = pos[0]
     y = pos[1]
-    for block in obst_list:
+    for block in map.blocks:
         if block.rect.collidepoint((x, y-blockH)):
             return block
     return 'Air'
@@ -144,7 +167,7 @@ def getBlockOneUp(pos):
 def getBlockOneDown(pos):
     x = pos[0]
     y = pos[1]
-    for block in obst_list:
+    for block in map.blocks:
         if block.rect.collidepoint((x, y+blockH)):
             return block
     return 'Air'
@@ -152,7 +175,7 @@ def getBlockOneDown(pos):
 def getBlockOneLeft(pos):
     x = pos[0]
     y = pos[1]
-    for block in obst_list:
+    for block in map.blocks:
         if block.rect.collidepoint((x-blockW, y)):
             return block
     return 'Air'
@@ -160,7 +183,7 @@ def getBlockOneLeft(pos):
 def getBlockOneRight(pos):
     x = pos[0]
     y = pos[1]
-    for block in obst_list:
+    for block in map.blocks:
         if block.rect.collidepoint((x+blockW, y-blockH)):
             return block
     return 'Air'
@@ -175,7 +198,7 @@ def getBlocksOneAround(pos):
     y = pos[1]
     
     
-    for block in obst_list:
+    for block in map.blocks:
         if block.rect.collidepoint((x, y-blockH)):
             up = block
         if block.rect.collidepoint((x, y+blockH)):
@@ -190,7 +213,7 @@ def getBlocksOneAround(pos):
 def getBlockAtMouse():
     mouseX = pygame.mouse.get_pos()[0]
     mouseY = pygame.mouse.get_pos()[1]
-    for block in obst_list:
+    for block in map.blocks:
         if block.rect.collidepoint((mouseX, mouseY)):
             return block
     return 'Air'
@@ -198,21 +221,37 @@ def getBlockAtMouse():
 def getBlockAtPos(pos):
     x = pos[0]
     y = pos[1]
-    for block in obst_list:
+    for block in map.blocks:
         if block.rect.collidepoint((x, y)):
             return block
     return 'Air'
 
-def checkIfSameBlocksAround(pos):
-    x = pos[0]
-    y = pos[1]
-        
+def checkIfBlocksAround(pos):
+    blocksAround = getBlocksOneAround(pos)
+    
+    up = False
+    down = False
+    left = False
+    right = False
+    
+    if blocksAround[0] != 'Air':
+        up = True
+    if blocksAround[1] != 'Air':
+        down = True
+    if blocksAround[2] != 'Air':
+        left = True
+    if blocksAround[3] != 'Air':
+        right = True
+    
+    return [up, down, left, right]
+    
+def checkIfSameBlocksAround(pos):        
     up = False
     down = False
     left = False
     right = False
 
-    blocksAround = getBlocksOneAround((x, y))
+    blocksAround = getBlocksOneAround(pos)
     posBlock = getBlockAtMouse().__class__.__name__
     if blocksAround[0].__class__.__name__ == posBlock:
         up = True
@@ -251,36 +290,50 @@ def checkifSameBlocksAroundMouseBlock():
 pygame.init()
 screen = pygame.display.set_mode((screenX, screenY))
 clock = pygame.time.Clock()
+
 running = True
 start_time = 0
 editorOrigo = (editorX, editorY)
+map = Map()
 editor = Editor(editorOrigo)
-
-obst_list = pygame.sprite.Group()
+saveTicker = 0
 
 # Main
 while running:
+    keys = pygame.key.get_pressed()
     # Event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if pygame.mouse.get_pressed()[0] and getBlockAtMouse() == 'Air':
-            placeObst('box', calcGridCellCorner(pygame.mouse.get_pos()))
+            Editor.placeObst('box', calcGridCellCorner(pygame.mouse.get_pos()))
                
         if pygame.mouse.get_pressed()[2] and getBlockAtMouse() == 'Air':
-            placeObst('grass', calcGridCellCorner(pygame.mouse.get_pos()))
-            
+            Editor.placeObst('grass', calcGridCellCorner(pygame.mouse.get_pos()))
          
         if pygame.mouse.get_pressed()[1] and getBlockAtMouse() != 'Air':
             getBlockAtMouse().kill()
-            updateBlocksAround(pygame.mouse.get_pos())
+                    updateBlocksAround(pygame.mouse.get_pos())
     
+        if event.type == pygame.KEYDOWN:
+            print(event.key, pygame.K_SPACE)
+            if event.key == pygame.K_SPACE:
+                print(saveTicker)
+                if saveTicker == 0: 
+                    map.save()
+                    saveTicker = saveSpeedLimit
+                    print('Saved!')
+            
     # Drawing order
     screen.fill('White')
     editor.render()
     
     # editor.showGrid()
-    obst_list.draw(screen)
+    map.blocks.draw(screen)
+    
+    # EndVariables
+    if saveTicker > 0:
+        saveTicker -= 1
     
     pygame.display.flip()
     clock.tick(60)
