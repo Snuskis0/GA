@@ -5,25 +5,44 @@ import os
 import json
 from enum import Enum
 
-
-# Classes
-class Editor():    
+class Editor():
+    def __init__(self, map):
+        self.map = map
     def setBgSize(map, size):
         map.background = pygame.transform.scale(map.background, size)
     
     def placeObst(obst, pos):
-        if obst == 'box':
+        if obst == 'Box':
             map.blocks.add(Box(pos))
-        if obst == 'grass':
+        if obst == 'Grass':
             map.blocks.add(Grass(pos))
         #updates blocks around and self
-        blocksAround = getBlocksOneAround(pos)
-        placedBlock = getBlockAtPos(pos)
-        placedBlock.update()
-        for block in blocksAround:
-            if block != 'Air':
-                block.update()
+        if getBlockAtPos(pos) != "Air":
+            getBlockAtPos(pos).update()
+        updateBlocksAround(pos)
+        
+    def save(self):
+        with open('save_game.json', 'w') as file:
+            print('Saving')
+            data = [(block.rect.topleft, block.__class__.__name__)
+            for block in self.blocks]
+            json.dump(data, file)
 
+    def load(self):
+        with open('save_game.json', 'r') as file:
+            print('Loading')
+            data = json.load(file)
+            self.blocks.empty()
+            for pos, mat in data:
+                Editor.placeObst(mat, pos)
+
+class origoDot():
+    def __init__(self):
+        self.pos = (0,0)
+    
+    def render(self):
+        pygame.draw.circle(screen, 'Black', self.pos, 3)
+      
 class Map():
     def __init__(self):
         self.blocks = pygame.sprite.Group()
@@ -39,19 +58,20 @@ class Map():
             block.rect[0] += add[0]
             block.rect[1] += add[1]
             
-    
     def save(self):
-        pass
-    
-    def load():
-        pass
+        with open('save_game.json', 'w') as file:
+            print('Saving')
+            data = [(block.rect.topleft, block.__class__.__name__)
+            for block in self.blocks]
+            json.dump(data, file)
 
-class Direction(Enum):
-    DEFAULT = 0
-    UP = 1
-    DOWN = 2
-    LEFT = 3
-    RIGHT = 4
+    def load(self):
+        with open('save_game.json', 'r') as file:
+            print('Loading')
+            data = json.load(file)
+            self.blocks.empty()
+            for pos, mat in data:
+                Editor.placeObst(mat, pos)
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, pos, filename):
@@ -61,8 +81,15 @@ class Obstacle(pygame.sprite.Sprite):
         self.image = pygame.image.load(f'Graphics/Tiles/{self.filename}')
         self.image = pygame.transform.scale(self.image,(blockW,blockH))
         self.rect = self.image.get_rect(topleft = self.pos)
-        self.direction = Direction.DEFAULT
-        
+        # self.direction = Direction.DEFAULT
+
+class Direction(Enum):
+    DEFAULT = 0
+    UP = 1
+    DOWN = 2
+    LEFT = 3
+    RIGHT = 4
+
 class Box(Obstacle):
     def __init__(self, pos):
         super().__init__(pos, 'box.png')
@@ -122,7 +149,6 @@ class Grass(Obstacle):
         self.image = pygame.image.load(f'Graphics/Tiles/{self.filename}')
 
 # Functions
-
 def howManyTrueIn(list):
     count = 0
     for item in list:
@@ -137,15 +163,6 @@ def addPos(pos1, pos2):
     y2 = pos2[1]
     return (x1+x2,y1+y2)
 
-def placeObst(obst, pos):
-    if obst == 'box':
-        map.blocks.add(Box(pos))
-    if obst == 'grass':
-        map.blocks.add(Grass(pos))
-    #updates blocks around and self
-    getBlockAtPos(pos).update()
-    updateBlocksAround(pos)
-    
 def updateBlocksAround(pos):
     blocksAround = getBlocksOneAround(pos)
     for block in blocksAround:
@@ -297,9 +314,7 @@ running = True
 start_time = 0
 editorOrigo = (mapX, mapY)
 map = Map()
-editor = Editor()
 saveTicker = 0
-
 
 # Main
 while running:
@@ -310,10 +325,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if pygame.mouse.get_pressed()[0] and getBlockAtMouse() == 'Air':
-            Editor.placeObst('box', calcGridCellCorner(pygame.mouse.get_pos()))
-               
-        if pygame.mouse.get_pressed()[2] and getBlockAtMouse() == 'Air':
-            map.addPosAllBlocks(pygame.mouse.get_rel())
+            Editor.placeObst('Box', calcGridCellCorner(pygame.mouse.get_pos()))
         
         if pygame.mouse.get_pressed()[2]:
             map.addPosAllBlocks(pygame.mouse.get_rel())
@@ -321,26 +333,27 @@ while running:
         if pygame.mouse.get_pressed()[1] and getBlockAtMouse() != 'Air':
             getBlockAtMouse().kill()
             updateBlocksAround(pygame.mouse.get_pos())
-
-        
         
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
                 map.addPosAllBlocks((0,-blockH))
-        
-        if event.type == pygame.KEYDOWN:
+            
             if event.key == pygame.K_s:
                 map.addPosAllBlocks((0,blockH))
-        
-        if event.type == pygame.KEYDOWN:
+            
             if event.key == pygame.K_a:
                 map.addPosAllBlocks((-blockW,0))
-        
-        if event.type == pygame.KEYDOWN:
+            
             if event.key == pygame.K_d:
                 map.addPosAllBlocks((blockW,0))
-    
-    
+            
+            if event.key == pygame.K_l and saveTicker == 0:
+                map.load()
+                saveTicker = saveSpeedLimit
+            
+            if event.key == pygame.K_SPACE and saveTicker == 0:
+                map.save()
+                saveTicker = saveSpeedLimit
     
     # Drawing order
     screen.fill('White')
