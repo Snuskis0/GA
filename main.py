@@ -66,15 +66,14 @@ class Map():
     # Save and load should be in editor, is in map currently for easier access
     def save(self):
         #Copies group but uses same sprites? Same sprite is placed in multipel groups
-        mapCopy = map.blocks.copy()
+        # Create a list with all sprites pos and type, change pos rel to origo, save list. 
         posList = []
-        for block in mapCopy:
-            posList.append(block.rect.topleft)
-        Editor.setAllBlockPosToOrigin(mapCopy)
+        matList = []
+        
         with open('save_game.json', 'w') as file:
             print('Saving')
             data = [(block.rect.topleft, block.__class__.__name__)
-            for block in mapCopy]
+            for block in posList]
             json.dump(data, file)
 
     def load(self):
