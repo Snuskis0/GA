@@ -11,3 +11,4 @@ placeSpeedLimit = 100 #milliseconds
 
 # Map
 saveSpeedLimit = 60
+origoDotRadius = 5
