@@ -4,6 +4,7 @@ from config import *
 import os
 import json
 from enum import Enum
+import copy
 
 class Editor():
     def __init__(self, map):
@@ -20,28 +21,32 @@ class Editor():
         if getBlockAtPos(pos) != "Air":
             getBlockAtPos(pos).update()
         updateBlocksAround(pos)
-        
-    def save(self):
-        with open('save_game.json', 'w') as file:
-            print('Saving')
-            data = [(block.rect.topleft, block.__class__.__name__)
-            for block in self.blocks]
-            json.dump(data, file)
+    
+    
+    # Unsure if this works
+    def getRelPosToOrigoDot(pos, origoPos):
+        return addPos(pos, origoPos)
+    
+    def setAllBlockPosToOrigin(blocks):
+        # Use a copy to avoid weird map interactions
+        origoX = origoDot.pos[0]
+        origoY = origoDot.pos[1]
+        for block in blocks:
+            print(block)
+            block.rect.topleft = Editor.getRelPosToOrigoDot(block.rect.topleft, (-origoX, -origoY))
+            
+            
 
-    def load(self):
-        with open('save_game.json', 'r') as file:
-            print('Loading')
-            data = json.load(file)
-            self.blocks.empty()
-            for pos, mat in data:
-                Editor.placeObst(mat, pos)
-
-class origoDot():
+class OrigoDot():
     def __init__(self):
         self.pos = (0,0)
     
     def render(self):
-        pygame.draw.circle(screen, 'Black', self.pos, 3)
+        pygame.draw.circle(screen, 'Black', self.pos, origoDotRadius)
+    
+    def updatePos(self, add):
+        self.pos = addPos(self.pos, add)
+    
       
 class Map():
     def __init__(self):
@@ -57,12 +62,19 @@ class Map():
         for block in self.blocks:
             block.rect[0] += add[0]
             block.rect[1] += add[1]
-            
+    
+    # Save and load should be in editor, is in map currently for easier access
     def save(self):
+        #Copies group but uses same sprites? Same sprite is placed in multipel groups
+        mapCopy = map.blocks.copy()
+        posList = []
+        for block in mapCopy:
+            posList.append(block.rect.topleft)
+        Editor.setAllBlockPosToOrigin(mapCopy)
         with open('save_game.json', 'w') as file:
             print('Saving')
             data = [(block.rect.topleft, block.__class__.__name__)
-            for block in self.blocks]
+            for block in mapCopy]
             json.dump(data, file)
 
     def load(self):
@@ -72,6 +84,7 @@ class Map():
             self.blocks.empty()
             for pos, mat in data:
                 Editor.placeObst(mat, pos)
+            origoDot.pos = (0, 0)
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, pos, filename):
@@ -309,11 +322,12 @@ def checkifSameBlocksAroundMouseBlock():
 pygame.init()
 screen = pygame.display.set_mode((screenX, screenY))
 clock = pygame.time.Clock()
-
+origoDot = OrigoDot()
 running = True
 start_time = 0
 editorOrigo = (mapX, mapY)
 map = Map()
+editor = Editor(map)
 saveTicker = 0
 
 # Main
@@ -325,10 +339,12 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if pygame.mouse.get_pressed()[0] and getBlockAtMouse() == 'Air':
-            Editor.placeObst('Box', calcGridCellCorner(pygame.mouse.get_pos()))
+            Editor.placeObst('Grass', calcGridCellCorner(pygame.mouse.get_pos()))
         
         if pygame.mouse.get_pressed()[2]:
-            map.addPosAllBlocks(pygame.mouse.get_rel())
+            relPos = pygame.mouse.get_rel()
+            map.addPosAllBlocks(relPos)
+            origoDot.updatePos(relPos)
          
         if pygame.mouse.get_pressed()[1] and getBlockAtMouse() != 'Air':
             getBlockAtMouse().kill()
@@ -358,6 +374,7 @@ while running:
     # Drawing order
     screen.fill('White')
     map.render()
+    origoDot.render()
     
     
     # EndVariables
