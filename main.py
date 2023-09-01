@@ -22,21 +22,6 @@ class Editor():
             getBlockAtPos(pos).update()
         updateBlocksAround(pos)
     
-    
-    # Unsure if this works
-    def getRelPosToOrigoDot(pos, origoPos):
-        return addPos(pos, origoPos)
-    
-    def setAllBlockPosToOrigin(blocks):
-        # Use a copy to avoid weird map interactions
-        origoX = origoDot.pos[0]
-        origoY = origoDot.pos[1]
-        for block in blocks:
-            print(block)
-            block.rect.topleft = Editor.getRelPosToOrigoDot(block.rect.topleft, (-origoX, -origoY))
-            
-            
-
 class OrigoDot():
     def __init__(self):
         self.pos = (0,0)
@@ -65,15 +50,12 @@ class Map():
     
     # Save and load should be in editor, is in map currently for easier access
     def save(self):
-        #Copies group but uses same sprites? Same sprite is placed in multipel groups
-        # Create a list with all sprites pos and type, change pos rel to origo, save list. 
-        posList = []
-        matList = []
-        
+        origoX = origoDot.pos[0]
+        origoY = origoDot.pos[1]
         with open('save_game.json', 'w') as file:
             print('Saving')
-            data = [(block.rect.topleft, block.__class__.__name__)
-            for block in posList]
+            data = [(addPos(block.rect.topleft, (-origoX, -origoY)), block.__class__.__name__)
+            for block in self.blocks]
             json.dump(data, file)
 
     def load(self):
