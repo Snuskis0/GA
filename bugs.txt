@@ -1,0 +1,1 @@
+block topright (left, under) bugged when removing blocks
