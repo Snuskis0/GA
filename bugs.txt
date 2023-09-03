@@ -1,1 +1,2 @@
 block topright (left, under) bugged when removing blocks
+updateBlocksAround broken when grid moved

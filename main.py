@@ -4,7 +4,6 @@ from config import *
 import os
 import json
 from enum import Enum
-import copy
 
 class Editor():
     def __init__(self, map):
@@ -22,12 +21,25 @@ class Editor():
             getBlockAtPos(pos).update()
         updateBlocksAround(pos)
     
+    def showGrid():
+        (offsetX, offsetY) = calcCornerOffset()
+        for x in range(20):
+            for y in range(10):
+                pygame.draw.line(screen, 'black', (0, y*blockH+offsetY),(screenX, y*blockH+offsetY))
+                pygame.draw.line(screen, 'black', (x*blockW+offsetX, 0),(x*blockW+offsetX, screenY))
+        
+        # for x in range(20):
+        #     for y in range(10):
+        #         pygame.draw.line(screen, 'red', (0, y*blockH),(screenX, y*blockH))
+        #         pygame.draw.line(screen, 'red', (x*blockW, 0),(x*blockW, screenY))
+                
+    
 class OrigoDot():
     def __init__(self):
         self.pos = (0,0)
     
     def render(self):
-        pygame.draw.circle(screen, 'Black', self.pos, origoDotRadius)
+        pygame.draw.circle(screen, 'black', self.pos, origoDotRadius)
     
     def updatePos(self, add):
         self.pos = addPos(self.pos, add)
@@ -157,17 +169,33 @@ def addPos(pos1, pos2):
     y2 = pos2[1]
     return (x1+x2,y1+y2)
 
+def subPos(pos1, pos2):
+    x1 = pos1[0]
+    y1 = pos1[1]
+    x2 = pos2[0]
+    y2 = pos2[1]
+    return (x1-x2,y1-y2)
+
 def updateBlocksAround(pos):
     blocksAround = getBlocksOneAround(pos)
     for block in blocksAround:
         if block != 'Air':
             block.update()
 
+def calcCornerOffset():
+    cornerOffsetX = origoDot.pos[0] % blockW
+    cornerOffsetY = origoDot.pos[1] % blockH
+    return(cornerOffsetX, cornerOffsetY)
+
 def calcGridCellCorner(pos):
     # calcs cornerPos for a given position (check whiteboard for better explaination)
-    x = pos[0]
-    y = pos[1]
-    return (int(x/blockW)*blockW,int(y/blockH)*blockH)
+    (x, y) = pos
+    OffsetX = origoDot.pos[0] % blockW
+    OffsetY = origoDot.pos[1] % blockH
+    # bugtesting here
+    print(f"Origo: {origoDot.pos} Corner: {int(x/(blockW))*blockW+OffsetX, int(y/blockH)*blockH+OffsetY}, MousePos: {pos}")
+    return (int((x-OffsetX)/blockW)*blockW+OffsetX, int((y-OffsetY)/blockH)*blockH+OffsetY)
+        
 
 def getBlockOneUp(pos):
     x = pos[0]
@@ -356,7 +384,12 @@ while running:
     screen.fill('White')
     map.render()
     origoDot.render()
-    
+    print(calcGridCellCorner(pygame.mouse.get_pos()))    
+    pygame.draw.circle(screen, 'red', pygame.mouse.get_pos(), 3)
+    pygame.draw.circle(screen, 'red', calcGridCellCorner(pygame.mouse.get_pos()), 3)
+    print(calcCornerOffset())
+    print(calcGridCellCorner(pygame.mouse.get_pos()))
+    Editor.showGrid()
     
     # EndVariables
     if saveTicker > 0:
