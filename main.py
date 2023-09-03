@@ -20,28 +20,30 @@ class Editor():
         if getBlockAtPos(pos) != "Air":
             getBlockAtPos(pos).update()
         updateBlocksAround(pos)
+    
+    def showGrid():
+        (offsetX, offsetY) = calcCornerOffset()
+        for x in range(20):
+            for y in range(10):
+                pygame.draw.line(screen, 'black', (0, y*blockH+offsetY),(screenX, y*blockH+offsetY))
+                pygame.draw.line(screen, 'black', (x*blockW+offsetX, 0),(x*blockW+offsetX, screenY))
         
-    def save(self):
-        with open('save_game.json', 'w') as file:
-            print('Saving')
-            data = [(block.rect.topleft, block.__class__.__name__)
-            for block in self.blocks]
-            json.dump(data, file)
-
-    def load(self):
-        with open('save_game.json', 'r') as file:
-            print('Loading')
-            data = json.load(file)
-            self.blocks.empty()
-            for pos, mat in data:
-                Editor.placeObst(mat, pos)
-
-class origoDot():
+        # for x in range(20):
+        #     for y in range(10):
+        #         pygame.draw.line(screen, 'red', (0, y*blockH),(screenX, y*blockH))
+        #         pygame.draw.line(screen, 'red', (x*blockW, 0),(x*blockW, screenY))
+                
+    
+class OrigoDot():
     def __init__(self):
         self.pos = (0,0)
     
     def render(self):
-        pygame.draw.circle(screen, 'Black', self.pos, 3)
+        pygame.draw.circle(screen, 'black', self.pos, origoDotRadius)
+    
+    def updatePos(self, add):
+        self.pos = addPos(self.pos, add)
+    
       
 class Map():
     def __init__(self):
@@ -57,11 +59,14 @@ class Map():
         for block in self.blocks:
             block.rect[0] += add[0]
             block.rect[1] += add[1]
-            
+    
+    # Save and load should be in editor, is in map currently for easier access
     def save(self):
+        origoX = origoDot.pos[0]
+        origoY = origoDot.pos[1]
         with open('save_game.json', 'w') as file:
             print('Saving')
-            data = [(block.rect.topleft, block.__class__.__name__)
+            data = [(addPos(block.rect.topleft, (-origoX, -origoY)), block.__class__.__name__)
             for block in self.blocks]
             json.dump(data, file)
 
@@ -72,6 +77,7 @@ class Map():
             self.blocks.empty()
             for pos, mat in data:
                 Editor.placeObst(mat, pos)
+            origoDot.pos = (0, 0)
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, pos, filename):
@@ -163,17 +169,33 @@ def addPos(pos1, pos2):
     y2 = pos2[1]
     return (x1+x2,y1+y2)
 
+def subPos(pos1, pos2):
+    x1 = pos1[0]
+    y1 = pos1[1]
+    x2 = pos2[0]
+    y2 = pos2[1]
+    return (x1-x2,y1-y2)
+
 def updateBlocksAround(pos):
     blocksAround = getBlocksOneAround(pos)
     for block in blocksAround:
         if block != 'Air':
             block.update()
 
+def calcCornerOffset():
+    cornerOffsetX = origoDot.pos[0] % blockW
+    cornerOffsetY = origoDot.pos[1] % blockH
+    return(cornerOffsetX, cornerOffsetY)
+
 def calcGridCellCorner(pos):
     # calcs cornerPos for a given position (check whiteboard for better explaination)
-    x = pos[0]
-    y = pos[1]
-    return (int(x/blockW)*blockW,int(y/blockH)*blockH)
+    (x, y) = pos
+    OffsetX = origoDot.pos[0] % blockW
+    OffsetY = origoDot.pos[1] % blockH
+    # bugtesting here
+    print(f"Origo: {origoDot.pos} Corner: {int(x/(blockW))*blockW+OffsetX, int(y/blockH)*blockH+OffsetY}, MousePos: {pos}")
+    return (int((x-OffsetX)/blockW)*blockW+OffsetX, int((y-OffsetY)/blockH)*blockH+OffsetY)
+        
 
 def getBlockOneUp(pos):
     x = pos[0]
@@ -309,11 +331,12 @@ def checkifSameBlocksAroundMouseBlock():
 pygame.init()
 screen = pygame.display.set_mode((screenX, screenY))
 clock = pygame.time.Clock()
-
+origoDot = OrigoDot()
 running = True
 start_time = 0
 editorOrigo = (mapX, mapY)
 map = Map()
+editor = Editor(map)
 saveTicker = 0
 
 # Main
@@ -325,10 +348,12 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if pygame.mouse.get_pressed()[0] and getBlockAtMouse() == 'Air':
-            Editor.placeObst('Box', calcGridCellCorner(pygame.mouse.get_pos()))
+            Editor.placeObst('Grass', calcGridCellCorner(pygame.mouse.get_pos()))
         
         if pygame.mouse.get_pressed()[2]:
-            map.addPosAllBlocks(pygame.mouse.get_rel())
+            relPos = pygame.mouse.get_rel()
+            map.addPosAllBlocks(relPos)
+            origoDot.updatePos(relPos)
          
         if pygame.mouse.get_pressed()[1] and getBlockAtMouse() != 'Air':
             getBlockAtMouse().kill()
@@ -358,7 +383,13 @@ while running:
     # Drawing order
     screen.fill('White')
     map.render()
-    
+    origoDot.render()
+    print(calcGridCellCorner(pygame.mouse.get_pos()))    
+    pygame.draw.circle(screen, 'red', pygame.mouse.get_pos(), 3)
+    pygame.draw.circle(screen, 'red', calcGridCellCorner(pygame.mouse.get_pos()), 3)
+    print(calcCornerOffset())
+    print(calcGridCellCorner(pygame.mouse.get_pos()))
+    Editor.showGrid()
     
     # EndVariables
     if saveTicker > 0:
