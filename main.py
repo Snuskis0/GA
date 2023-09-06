@@ -233,8 +233,7 @@ def getBlocksOneAround(pos):
     down = 'Air'
     left = 'Air'
     right = 'Air'
-    x = pos[0]
-    y = pos[1]
+    (x, y)= pos
     
     for block in map.blocks:
         if block.rect.collidepoint((x, y-blockH)):
@@ -325,6 +324,7 @@ def checkifSameBlocksAroundMouseBlock():
     return up, down, left, right
 
 # Setup
+os.system('cls')
 pygame.init()
 screen = pygame.display.set_mode((screenX, screenY))
 clock = pygame.time.Clock()
@@ -344,8 +344,14 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        
+        if pygame.mouse.get_pressed()[0]:
+            print(getBlocksOneAround(pygame.mouse.get_pos()))
+            
         if pygame.mouse.get_pressed()[0] and getBlockAtMouse() == 'Air':
+            # print(getBlocksOneAround(pygame.mouse.get_pos()))
             Editor.placeObst('Grass', calcGridCellCorner(pygame.mouse.get_pos()))
+            
         
         if pygame.mouse.get_pressed()[2]:
             relPos = pygame.mouse.get_rel()
@@ -381,12 +387,9 @@ while running:
     screen.fill('White')
     map.render()
     origoDot.render()
-    print(calcGridCellCorner(pygame.mouse.get_pos()))    
     pygame.draw.circle(screen, 'red', pygame.mouse.get_pos(), 3)
-    pygame.draw.circle(screen, 'red', calcGridCellCorner(pygame.mouse.get_pos()), 3)
-    print(calcCornerOffset())
-    print(calcGridCellCorner(pygame.mouse.get_pos()))
-    Editor.showGrid()
+    # pygame.draw.circle(screen, 'red', calcGridCellCorner(pygame.mouse.get_pos()), 3)
+    # Editor.showGrid()
     
     # EndVariables
     if saveTicker > 0:

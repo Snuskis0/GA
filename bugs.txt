@@ -1,2 +1,5 @@
 block topright (left, under) bugged when removing blocks
 updateBlocksAround broken when grid moved
+
+getBlocksOneAround working, don't know what is broken (add offset somewhere?)
+Guaranteed bugged after cameraMove with graphics
