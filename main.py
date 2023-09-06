@@ -193,9 +193,7 @@ def calcGridCellCorner(pos):
     OffsetX = origoDot.pos[0] % blockW
     OffsetY = origoDot.pos[1] % blockH
     # bugtesting here
-    print(f"Origo: {origoDot.pos} Corner: {int(x/(blockW))*blockW+OffsetX, int(y/blockH)*blockH+OffsetY}, MousePos: {pos}")
     return (int((x-OffsetX)/blockW)*blockW+OffsetX, int((y-OffsetY)/blockH)*blockH+OffsetY)
-        
 
 def getBlockOneUp(pos):
     x = pos[0]
@@ -237,7 +235,6 @@ def getBlocksOneAround(pos):
     right = 'Air'
     x = pos[0]
     y = pos[1]
-    
     
     for block in map.blocks:
         if block.rect.collidepoint((x, y-blockH)):
