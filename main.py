@@ -59,6 +59,7 @@ class Map():
         for block in self.blocks:
             block.rect[0] += add[0]
             block.rect[1] += add[1]
+            block.pos = addPos(block.pos, add)
     
     # Save and load should be in editor, is in map currently for easier access
     def save(self):
@@ -179,7 +180,7 @@ def subPos(pos1, pos2):
 def updateBlocksAround(pos):
     blocksAround = getBlocksOneAround(pos)
     for block in blocksAround:
-        if block != 'Air':
+        if block != False:
             block.update()
 
 def calcCornerOffset():
@@ -201,7 +202,7 @@ def getBlockOneUp(pos):
     for block in map.blocks:
         if block.rect.collidepoint((x, y-blockH)):
             return block
-    return 'Air'
+    return False
 
 def getBlockOneDown(pos):
     x = pos[0]
@@ -209,7 +210,7 @@ def getBlockOneDown(pos):
     for block in map.blocks:
         if block.rect.collidepoint((x, y+blockH)):
             return block
-    return 'Air'
+    return False
 
 def getBlockOneLeft(pos):
     x = pos[0]
@@ -217,7 +218,7 @@ def getBlockOneLeft(pos):
     for block in map.blocks:
         if block.rect.collidepoint((x-blockW, y)):
             return block
-    return 'Air'
+    return False
 
 def getBlockOneRight(pos):
     x = pos[0]
@@ -225,14 +226,14 @@ def getBlockOneRight(pos):
     for block in map.blocks:
         if block.rect.collidepoint((x+blockW, y-blockH)):
             return block
-    return 'Air'
+    return False
 
 def getBlocksOneAround(pos):
     # Returns block objects in order: Up, Down, Left, Right
-    up = 'Air'
-    down = 'Air'
-    left = 'Air'
-    right = 'Air'
+    up = False
+    down = False
+    left = False
+    right = False
     (x, y)= pos
     
     for block in map.blocks:
@@ -253,7 +254,7 @@ def getBlockAtMouse():
     for block in map.blocks:
         if block.rect.collidepoint((mouseX, mouseY)):
             return block
-    return 'Air'
+    return False
 
 def getBlockAtPos(pos):
     x = pos[0]
@@ -261,7 +262,7 @@ def getBlockAtPos(pos):
     for block in map.blocks:
         if block.rect.collidepoint((x, y)):
             return block
-    return 'Air'
+    return False
 
 def checkIfBlocksAround(pos):
     blocksAround = getBlocksOneAround(pos)
@@ -271,13 +272,13 @@ def checkIfBlocksAround(pos):
     left = False
     right = False
     
-    if blocksAround[0] != 'Air':
+    if blocksAround[0] != False:
         up = True
-    if blocksAround[1] != 'Air':
+    if blocksAround[1] != False:
         down = True
-    if blocksAround[2] != 'Air':
+    if blocksAround[2] != False:
         left = True
-    if blocksAround[3] != 'Air':
+    if blocksAround[3] != False:
         right = True
     
     return [up, down, left, right]
@@ -325,6 +326,7 @@ def checkifSameBlocksAroundMouseBlock():
 
 # Setup
 os.system('cls')
+os.system('clear')
 pygame.init()
 screen = pygame.display.set_mode((screenX, screenY))
 clock = pygame.time.Clock()
@@ -344,21 +346,17 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        
-        if pygame.mouse.get_pressed()[0]:
-            print(getBlocksOneAround(pygame.mouse.get_pos()))
             
-        if pygame.mouse.get_pressed()[0] and getBlockAtMouse() == 'Air':
+        if pygame.mouse.get_pressed()[0] and getBlockAtMouse() == False:
             # print(getBlocksOneAround(pygame.mouse.get_pos()))
             Editor.placeObst('Grass', calcGridCellCorner(pygame.mouse.get_pos()))
-            
         
         if pygame.mouse.get_pressed()[2]:
             relPos = pygame.mouse.get_rel()
             map.addPosAllBlocks(relPos)
             origoDot.updatePos(relPos)
          
-        if pygame.mouse.get_pressed()[1] and getBlockAtMouse() != 'Air':
+        if pygame.mouse.get_pressed()[1] and getBlockAtMouse() != False:
             getBlockAtMouse().kill()
             updateBlocksAround(pygame.mouse.get_pos())
         
@@ -382,15 +380,23 @@ while running:
             if event.key == pygame.K_SPACE and saveTicker == 0:
                 map.save()
                 saveTicker = saveSpeedLimit
+            
+            if event.key == pygame.K_t:
+                block = getBlockAtMouse()
+                print(block.pos)
+                print(getBlocksOneAround(block.pos))
+                pygame.draw.circle(screen, 'red', block.pos, 5)
+    
+    for block in map.blocks:
+        block.update()
     
     # Drawing order
     screen.fill('White')
     map.render()
     origoDot.render()
-    pygame.draw.circle(screen, 'red', pygame.mouse.get_pos(), 3)
+    pygame.draw.circle(screen, 'black', pygame.mouse.get_pos(), 3)
     # pygame.draw.circle(screen, 'red', calcGridCellCorner(pygame.mouse.get_pos()), 3)
-    # Editor.showGrid()
-    
+
     # EndVariables
     if saveTicker > 0:
         saveTicker -= 1
