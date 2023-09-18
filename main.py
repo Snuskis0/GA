@@ -27,12 +27,6 @@ class Editor():
             for y in range(10):
                 pygame.draw.line(screen, 'black', (0, y*blockH+offsetY),(screenX, y*blockH+offsetY))
                 pygame.draw.line(screen, 'black', (x*blockW+offsetX, 0),(x*blockW+offsetX, screenY))
-        
-        # for x in range(20):
-        #     for y in range(10):
-        #         pygame.draw.line(screen, 'red', (0, y*blockH),(screenX, y*blockH))
-        #         pygame.draw.line(screen, 'red', (x*blockW, 0),(x*blockW, screenY))
-                
     
 class OrigoDot():
     def __init__(self):
@@ -43,7 +37,6 @@ class OrigoDot():
     
     def updatePos(self, add):
         self.pos = addPos(self.pos, add)
-    
       
 class Map():
     def __init__(self):
