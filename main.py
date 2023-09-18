@@ -194,7 +194,7 @@ def calcGridCellCorner(pos):
     OffsetX = origoDot.pos[0] % blockW
     OffsetY = origoDot.pos[1] % blockH
     # bugtesting here
-    return (int((x-OffsetX)/blockW)*blockW+OffsetX, int((y-OffsetY)/blockH)*blockH+OffsetY)
+    return ((int((x-OffsetX)/blockW))*blockW+OffsetX, int((y-OffsetY)/blockH)*blockH+OffsetY)
 
 def getBlockOneUp(pos):
     x = pos[0]
