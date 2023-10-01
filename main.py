@@ -112,6 +112,7 @@ class Grass(Obstacle):
         right = blocks[3]
         
         BlocksAroundCount = howManyTrueIn(blocks)
+        print('blocks around: ',blocks)
         #long, can't think of a faster / better way
         #Maybe divide material name and form into 2?
         #Looks awfull
@@ -193,7 +194,7 @@ def calcGridCellCorner(pos):
     OffsetX = origoDot.pos[0] % blockW
     OffsetY = origoDot.pos[1] % blockH
     # bugtesting here
-    return (int((x-OffsetX)/blockW)*blockW+OffsetX, int((y-OffsetY)/blockH)*blockH+OffsetY)
+    return ((int((x-OffsetX+blockW)/blockW)-1)*blockW+OffsetX, (int((y-OffsetY+blockW)/blockH)-1)*blockH+OffsetY)
         
 
 def getBlockOneUp(pos):
@@ -235,7 +236,6 @@ def getBlocksOneAround(pos):
     left = 'Air'
     right = 'Air'
     (x, y)= pos
-    
     
     for block in map.blocks:
         if block.rect.collidepoint((x, y-blockH)):
@@ -347,13 +347,12 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         
-        if pygame.mouse.get_pressed()[0]:
-            print(getBlocksOneAround(pygame.mouse.get_pos()))
+        # if pygame.mouse.get_pressed()[0]:
+            # print(getBlocksOneAround(pygame.mouse.get_pos()))
             
         if pygame.mouse.get_pressed()[0] and getBlockAtMouse() == 'Air':
             # print(getBlocksOneAround(pygame.mouse.get_pos()))
             Editor.placeObst('Grass', calcGridCellCorner(pygame.mouse.get_pos()))
-            
         
         if pygame.mouse.get_pressed()[2]:
             relPos = pygame.mouse.get_rel()
@@ -384,6 +383,12 @@ while running:
             if event.key == pygame.K_SPACE and saveTicker == 0:
                 map.save()
                 saveTicker = saveSpeedLimit
+            
+            if event.key == pygame.K_c:
+                getBlockAtMouse().update()
+            
+            if event.key == pygame.K_p:
+                os.system('cls')
     
     # Drawing order
     screen.fill('White')
