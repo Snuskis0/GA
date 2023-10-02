@@ -50,12 +50,6 @@ while running:
             if event.key == pygame.K_SPACE and saveTicker == 0:
                 editor.save()
                 saveTicker = saveSpeedLimit
-            
-            if event.key == pygame.K_t:
-                block = editor.getBlockAtMouse()
-                print(block.pos)
-                print(editor.getBlocksOneAround(block.pos))
-                pygame.draw.circle(screen, 'red', block.pos, 5)
     
     # Drawing order
     screen.fill('White')
