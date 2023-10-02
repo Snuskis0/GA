@@ -1,8 +1,12 @@
+import pygame
+
 # Screen
 screenX = 1024
 screenY = 512
+screen = pygame.display.set_mode((screenX, screenY))
 
 # Editor
+
 mapX = 0
 mapY = 0
 blockW = 70 # 1024 / 64 = 16, blocks are 70x70 but changed to 60x60
