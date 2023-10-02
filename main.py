@@ -106,7 +106,6 @@ class Grass(Obstacle):
         right = blocks[3]
         
         BlocksAroundCount = howManyTrueIn(blocks)
-        print('blocks around: ',blocks)
         #long, can't think of a faster / better way
         #Maybe divide material name and form into 2?
         #Looks awfull
