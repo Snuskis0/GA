@@ -10,6 +10,9 @@ class Editor():
         self.map = Map()
         self.origoDot = OrigoDot()
     
+    def updateBlock(self, block, blocksAround):
+        block.update(blocksAround)
+    
     def save(self):
         self.map.save(self.origoDot.pos)
     
@@ -21,6 +24,8 @@ class Editor():
             for pos, mat in data:
                 self.placeObst(mat, pos)
             self.origoDot.pos = (0, 0)
+        for block in self.map.blocks:
+            self.updateBlock(block, self.checkIfBlocksAround(block.pos))
     
     def setBgSize(map, size):
         map.background = pygame.transform.scale(map.background, size)
@@ -57,7 +62,7 @@ class Editor():
         offsetX = self.origoDot.pos[0] % blockW
         offsetY = self.origoDot.pos[1] % blockH
         # bugtesting here
-        return ((int((x-offsetX)/blockW))*blockW+offsetX, int((y-offsetY)/blockH)*blockH+offsetY)
+        return ((int((x-offsetX+blockW)/blockW)-1)*blockW+offsetX, (int((y-offsetY+blockW)/blockH)-1)*blockH+offsetY)
     
     def calcCornerOffset(self):
         cornerOffsetX = self.origoDot.pos[0] % blockW
