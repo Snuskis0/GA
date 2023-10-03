@@ -1,4 +1,4 @@
-from obstacle import *
+from Editor.Map.Block.FullBlock.obstacle import *
 
 class Box(Obstacle):
     def __init__(self, pos):

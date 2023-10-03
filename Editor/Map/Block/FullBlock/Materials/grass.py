@@ -1,5 +1,5 @@
 import pygame
-from obstacle import *
+from Editor.Map.Block.FullBlock.obstacle import *
 from functions import howManyTrueIn
 
 class Grass(Obstacle):

@@ -1,7 +1,7 @@
 import pygame
-from map import *
-from origoDot import *
-from grass import *
+from Editor.Map.map import *
+from Editor.OrigoDot.origoDot import *
+from Editor.Map.Block.FullBlock.Materials.grass import *
 #from box import *
 from config import blockW, blockH, screenX, screenY
 
@@ -13,11 +13,12 @@ class Editor():
     def updateBlock(self, block, blocksAround):
         block.update(blocksAround)
     
-    def save(self):
-        self.map.save(self.origoDot.pos)
+    def save(self, saveFile):
+        self.map.save(self.origoDot.pos, saveFile)
     
-    def load(self):
-        with open('save_game.json', 'r') as file:
+    def load(self, saveFile):
+        path = f"Editor/saveFiles/file{saveFile}.json"
+        with open(path, 'r') as file:
             print('Loading')
             data = json.load(file)
             self.map.blocks.empty()

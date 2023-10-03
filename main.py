@@ -2,11 +2,7 @@
 import pygame
 import os
 from config import *
-# from grass import *
-# from box import *
-# from obstacle import *
-# from map import *
-from editor import *
+from Editor.editor import *
 
 # Setup
 os.system('cls')
@@ -22,7 +18,6 @@ saveTicker = 0
 # Main
 while running:
     pygame.mouse.get_rel()
-    keys = pygame.key.get_pressed()
     # Event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -42,13 +37,14 @@ while running:
             editor.updateBlocksAround(pygame.mouse.get_pos())
         
         if event.type == pygame.KEYDOWN:
-            
-            if event.key == pygame.K_l and saveTicker == 0:
-                editor.load()
+            keys = pygame.key.get_pressed()
+
+            if keys[pygame.K_l] and keys[pygame.K_1] and saveTicker == 0 :
+                editor.load(1)
                 saveTicker = saveSpeedLimit
             
-            if event.key == pygame.K_SPACE and saveTicker == 0:
-                editor.save()
+            if saveTicker == 0 and keys[pygame.K_k] and keys[pygame.K_1] and saveTicker == 0 :
+                editor.save(1)
                 saveTicker = saveSpeedLimit
     
     # Drawing order
