@@ -20,8 +20,9 @@ class Map():
             block.pos = addPos(block.pos, add)
     
     # Save and load should be in editor, is in map currently for easier access
-    def save(self, origoPos):
-        with open('save_game.json', 'w') as file:
+    def save(self, origoPos, saveFile):
+        path = f"Editor/saveFiles/file{saveFile}.json"
+        with open(path, 'w') as file:
             print('Saving')
             data = [(subPos(block.rect.topleft, origoPos), block.__class__.__name__)
             for block in self.blocks]
