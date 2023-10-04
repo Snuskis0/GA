@@ -38,13 +38,30 @@ while running:
         
         if event.type == pygame.KEYDOWN:
             keys = pygame.key.get_pressed()
-
-            if keys[pygame.K_l] and keys[pygame.K_1] and saveTicker == 0 :
+            
+            #Save/Load 1
+            if keys[pygame.K_1] and keys[pygame.K_l] and saveTicker == 0 :
                 editor.load(1)
                 saveTicker = saveSpeedLimit
             
-            if saveTicker == 0 and keys[pygame.K_k] and keys[pygame.K_1] and saveTicker == 0 :
+            if keys[pygame.K_1] and keys[pygame.K_k] and saveTicker == 0:
                 editor.save(1)
+                saveTicker = saveSpeedLimit
+            #Save/Load 2
+            if keys[pygame.K_2] and keys[pygame.K_l] and saveTicker == 0 :
+                editor.load(2)
+                saveTicker = saveSpeedLimit
+            
+            if keys[pygame.K_2] and keys[pygame.K_k] and saveTicker == 0:
+                editor.save(2)
+                saveTicker = saveSpeedLimit
+            #Save/Load 3
+            if keys[pygame.K_3] and keys[pygame.K_l] and saveTicker == 0 :
+                editor.load(3)
+                saveTicker = saveSpeedLimit
+            
+            if keys[pygame.K_3] and keys[pygame.K_k] and saveTicker == 0:
+                editor.save(3)
                 saveTicker = saveSpeedLimit
     
     # Drawing order
