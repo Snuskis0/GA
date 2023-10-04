@@ -23,7 +23,7 @@ class Map():
     def save(self, origoPos, saveFile):
         path = f"Editor/saveFiles/file{saveFile}.json"
         with open(path, 'w') as file:
-            print('Saving')
+            print(f'Saving to save file {saveFile}')
             data = [(subPos(block.rect.topleft, origoPos), block.__class__.__name__)
             for block in self.blocks]
             json.dump(data, file)
