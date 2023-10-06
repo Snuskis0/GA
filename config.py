@@ -14,5 +14,5 @@ blockH = 70 # 1024 / 64 = 16
 placeSpeedLimit = 100 #milliseconds
 
 # Map
-saveSpeedLimit = 60
+saveSpeedLimit = 20
 origoDotRadius = 5

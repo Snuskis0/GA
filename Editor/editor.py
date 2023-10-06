@@ -19,7 +19,7 @@ class Editor():
     def load(self, saveFile):
         path = f"Editor/saveFiles/file{saveFile}.json"
         with open(path, 'r') as file:
-            print('Loading')
+            print(f'Loading save file {saveFile}')
             data = json.load(file)
             self.map.blocks.empty()
             for pos, mat in data:
