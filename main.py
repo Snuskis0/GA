@@ -26,7 +26,7 @@ while running:
             
         if pygame.mouse.get_pressed()[0] and editor.getBlockAtMouse() == False:
             # print(editor.getBlocksOneAround(pygame.mouse.get_pos()))
-            editor.placeObst('Grass', editor.calcGridCellCorner(pygame.mouse.get_pos()))
+            editor.placeObst(editor.calcGridCellCorner(pygame.mouse.get_pos()))
         
         if pygame.mouse.get_pressed()[2]:
             relPos = pygame.mouse.get_rel()
@@ -39,6 +39,12 @@ while running:
         
         if event.type == pygame.KEYDOWN:
             keys = pygame.key.get_pressed()
+            
+            if event.key == pygame.K_1:
+                editor.setCurrentBlock('Grass')
+            
+            if event.key == pygame.K_2:
+                editor.setCurrentBlock('Box')
             
             if event.key == pygame.K_p:
                 #used for bugtesting

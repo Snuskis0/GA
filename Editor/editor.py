@@ -2,13 +2,14 @@ import pygame
 from Editor.Map.map import *
 from Editor.OrigoDot.origoDot import *
 from Editor.Map.Block.FullBlock.Materials.grass import *
-#from box import *
+from Editor.Map.Block.FullBlock.Materials.box import *
 from config import blockW, blockH, mapScreenX, mapScreenY
 
 class Editor():
     def __init__(self):
         self.map = Map()
         self.origoDot = OrigoDot()
+        self.currentBlock = "Grass"
     
     def updateBlock(self, block, blocksAround):
         block.update(blocksAround)
@@ -23,7 +24,8 @@ class Editor():
             data = json.load(file)
             self.map.blocks.empty()
             for pos, mat in data:
-                self.placeObst(mat, pos)
+                self.setCurrentBlock(mat)
+                self.placeObst(pos)
             self.origoDot.pos = (0, 0)
         for block in self.map.blocks:
             self.updateBlock(block, self.checkIfBlocksAround(block.pos))
@@ -31,10 +33,13 @@ class Editor():
     def setBgSize(map, size):
         map.background = pygame.transform.scale(map.background, size)
     
-    def placeObst(self, obst, pos):
-        if obst == 'Box':
+    def setCurrentBlock(self, block):
+        self.currentBlock = block
+    
+    def placeObst(self, pos):
+        if self.currentBlock == 'Box':
             self.map.blocks.add(Box(pos))
-        if obst == 'Grass':
+        if self.currentBlock == 'Grass':
             self.map.blocks.add(Grass(pos))
         #updates blocks around and self
         blocksAround = self.checkIfSameBlocksAround(pos)
