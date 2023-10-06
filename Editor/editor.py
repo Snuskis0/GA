@@ -3,7 +3,7 @@ from Editor.Map.map import *
 from Editor.OrigoDot.origoDot import *
 from Editor.Map.Block.FullBlock.Materials.grass import *
 #from box import *
-from config import blockW, blockH, screenX, screenY
+from config import blockW, blockH, mapScreenX, mapScreenY
 
 class Editor():
     def __init__(self):
@@ -46,8 +46,8 @@ class Editor():
         (offsetX, offsetY) = self.calcCornerOffset()
         for x in range(20):
             for y in range(10):
-                pygame.draw.line(screen, 'black', (0, y*blockH+offsetY),(screenX, y*blockH+offsetY))
-                pygame.draw.line(screen, 'black', (x*blockW+offsetX, 0),(x*blockW+offsetX, screenY))
+                pygame.draw.line(screen, 'black', (0, y*blockH+offsetY),(mapScreenX, y*blockH+offsetY))
+                pygame.draw.line(screen, 'black', (x*blockW+offsetX, 0),(x*blockW+offsetX, mapScreenY))
     
     def getBlockAtMouse(self):
         mouseX = pygame.mouse.get_pos()[0]

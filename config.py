@@ -1,9 +1,9 @@
 import pygame
 
 # Screen
-screenX = 1024
-screenY = 512
-screen = pygame.display.set_mode((screenX, screenY))
+mapScreenX = 1024
+mapScreenY = 512
+screen = pygame.display.set_mode((mapScreenX, mapScreenY))
 
 # Editor
 

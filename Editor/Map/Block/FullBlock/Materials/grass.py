@@ -13,7 +13,9 @@ class Grass(Obstacle):
         right = blocksAround[3]
         
         blocksAroundCount = howManyTrueIn(blocksAround)
-            
+        
+        if blocksAroundCount == 0:
+            self.filename = 'grass.png'
         if blocksAroundCount == 1:
             if right:
                 self.filename = 'grassLeft.png'

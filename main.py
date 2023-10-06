@@ -14,6 +14,7 @@ running = True
 start_time = 0
 editor = Editor()
 saveTicker = 0
+callCounter = 0
 
 # Main
 while running:
@@ -39,6 +40,14 @@ while running:
         if event.type == pygame.KEYDOWN:
             keys = pygame.key.get_pressed()
             
+            if event.key == pygame.K_p:
+                #used for bugtesting
+                
+                # print(editor.checkIfBlocksAround(pygame.mouse.get_pos()))
+                callCounter += 1
+                print(callCounter)
+                print("")
+
             #Save/Load 1
             if keys[pygame.K_1] and keys[pygame.K_l] and saveTicker == 0 :
                 editor.load(1)
@@ -63,6 +72,9 @@ while running:
             if keys[pygame.K_3] and keys[pygame.K_k] and saveTicker == 0:
                 editor.save(3)
                 saveTicker = saveSpeedLimit
+    
+    for block in editor.map.blocks:
+        editor.updateBlock(block, editor.checkIfBlocksAround(block.pos))
     
     # Drawing order
     screen.fill('White')
