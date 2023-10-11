@@ -3,12 +3,14 @@ from Editor.Map.map import *
 from Editor.OrigoDot.origoDot import *
 from Editor.Map.Block.FullBlock.Materials.grass import *
 from Editor.Map.Block.FullBlock.Materials.box import *
+from Editor.Ui.ui import *
 from config import blockW, blockH, mapScreenX, mapScreenY
 
 class Editor():
     def __init__(self):
         self.map = Map()
         self.origoDot = OrigoDot()
+        self.ui = Ui()
         self.currentBlock = "Grass"
     
     def updateBlock(self, block, blocksAround):

@@ -3,6 +3,7 @@ import pygame
 import os
 from config import *
 from Editor.editor import *
+from Editor.Ui.ui import *
 
 # Setup
 os.system('cls')
@@ -20,12 +21,12 @@ callCounter = 0
 while running:
     pygame.mouse.get_rel()
     # Event loop
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
             
-        if pygame.mouse.get_pressed()[0] and editor.getBlockAtMouse() == False:
-            # print(editor.getBlocksOneAround(pygame.mouse.get_pos()))
+        if pygame.mouse.get_pressed()[0] and editor.getBlockAtMouse() == False and pygame.mouse.get_pos()[0] < mapScreenX:
             editor.placeObst(editor.calcGridCellCorner(pygame.mouse.get_pos()))
         
         if pygame.mouse.get_pressed()[2]:
@@ -36,6 +37,12 @@ while running:
         if pygame.mouse.get_pressed()[1] and editor.getBlockAtMouse() != False:
             editor.getBlockAtMouse().kill()
             editor.updateBlocksAround(pygame.mouse.get_pos())
+        
+        if pygame.mouse.get_pressed()[0]:
+            if editor.ui.checkIfHovered():
+                for block in editor.ui.uiBlocks:
+                    if block.checkIfHovered():
+                        print(block, "clicked!")
         
         if event.type == pygame.KEYDOWN:
             keys = pygame.key.get_pressed()
@@ -54,6 +61,10 @@ while running:
                 print(callCounter)
                 print("")
 
+            if keys[pygame.K_l] and keys[pygame.K_c] and saveTicker == 0:
+                editor.map.blocks.empty()
+                saveTicker = saveSpeedLimit
+            
             #Save/Load 1
             if keys[pygame.K_1] and keys[pygame.K_l] and saveTicker == 0 :
                 editor.load(1)
@@ -78,17 +89,17 @@ while running:
             if keys[pygame.K_3] and keys[pygame.K_k] and saveTicker == 0:
                 editor.save(3)
                 saveTicker = saveSpeedLimit
-    
-    for block in editor.map.blocks:
-        editor.updateBlock(block, editor.checkIfBlocksAround(block.pos))
-    
+
+
     # Drawing order
     screen.fill('White')
     editor.map.render()
     editor.origoDot.render()
+    editor.ui.render()
+    
     pygame.draw.circle(screen, 'black', pygame.mouse.get_pos(), 3)
-    # pygame.draw.circle(screen, 'red', editor.calcGridCellCorner(pygame.mouse.get_pos()), 3)
 
+    
     # EndVariables
     if saveTicker > 0:
         saveTicker -= 1
