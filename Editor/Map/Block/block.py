@@ -1,7 +1,7 @@
 import pygame
 from config import blockW, blockH
 
-class Obstacle(pygame.sprite.Sprite):
+class Block(pygame.sprite.Sprite):
     def __init__(self, pos, filename):
         super().__init__()
         self.filename = filename

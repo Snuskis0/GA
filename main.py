@@ -46,18 +46,21 @@ while running:
         
         if event.type == pygame.KEYDOWN:
             keys = pygame.key.get_pressed()
-            
+    
             if event.key == pygame.K_1:
                 editor.setCurrentBlock('Grass')
             
             if event.key == pygame.K_2:
                 editor.setCurrentBlock('Box')
             
+            if event.key == pygame.K_t:
+                editor.ui.addPage(editor.ui.createPage(["Grass", "Grass", "Grass", "Grass", "Grass", "Grass", "Grass", "Grass",]))
+                print(editor.ui.pages)
+            
             if event.key == pygame.K_p:
                 #used for bugtesting
-                
-                # print(editor.checkIfBlocksAround(pygame.mouse.get_pos()))
                 callCounter += 1
+                
                 print(callCounter)
                 print("")
 

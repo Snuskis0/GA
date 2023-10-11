@@ -1,8 +1,8 @@
 import pygame
-from Editor.Map.Block.FullBlock.obstacle import *
+from Editor.Map.Block.FullBlock.fullBlock import *
 from functions import howManyTrueIn
 
-class Grass(Obstacle):
+class Grass(FullBlock):
     def __init__(self, pos):
         super().__init__(pos, 'grass.png')
     
