@@ -1,20 +1,8 @@
 import pygame
-from config import mapScreenX, editorScreenX, editorScreenY, screen, blockW, blockH
+from config import mapScreenX, editorScreenX, editorScreenY, screen, blockW, blockH, standardUiPageOne
 from functions import addPos
-
-class MatCell(pygame.sprite.Sprite):
-    def __init__(self, pos, mat):
-        super().__init__()
-        self.pos = pos
-        self.mat = mat
-        self.image = pygame.image.load("Graphics/Tiles/grass.png") 
-        self.rect = self.image.get_rect(center = self.pos)
-    
-    def checkIfHovered(self):
-        if pygame.Rect.collidepoint(self.rect, pygame.mouse.get_pos()):
-            return True
-        else:
-            return False
+from Editor.Ui.MatCell.matCell import MatCell
+from Editor.Ui.pageSelector.pageSelector import PageSelector
 
 class Ui(pygame.sprite.Sprite):
     def __init__(self):
@@ -24,12 +12,24 @@ class Ui(pygame.sprite.Sprite):
         self.uiBlocks = pygame.sprite.Group()
         self.pages = []
         self.currentPage = 0
+        
+        #Temporary, here until I have a working item selector
+        self.pages.append(self.createPage(standardUiPageOne))
+        self.pageSelectors = pygame.sprite.Group()
+        self.addPageSelectors()
+        print(self.pageSelectors())
+        
     
     def render(self):
         pygame.draw.rect(screen, (255,255,220), self.backgroundRect)
         pygame.draw.line(screen, 'Black', self.pos, self.barrierBottomPos, 1)
+        self.pageSelectors.draw(screen)
         if self.pages != []:
             self.pages[self.currentPage].draw(screen)
+    
+    def addPageSelectors(self):
+        for i in range(5):
+            self.pageSelectors.add(PageSelector((mapScreenX+50+blockW*i, editorScreenY-100), (i+1)))
     
     def checkIfHovered(self):
         if pygame.Rect.collidepoint(self.backgroundRect, pygame.mouse.get_pos()):

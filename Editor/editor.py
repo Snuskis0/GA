@@ -1,9 +1,9 @@
 import pygame
-from Editor.Map.map import *
-from Editor.OrigoDot.origoDot import *
-from Editor.Map.Block.FullBlock.Materials.grass import *
-from Editor.Map.Block.FullBlock.Materials.box import *
-from Editor.Ui.ui import *
+from Editor.Map.map import mapX
+from Editor.OrigoDot.origoDot import OrigoDot
+from Editor.Map.Block.FullBlock.Materials.grass import Grass
+from Editor.Map.Block.FullBlock.Materials.box import Box
+from Editor.Ui.ui import Ui
 from config import blockW, blockH, mapScreenX, mapScreenY
 
 class Editor():

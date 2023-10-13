@@ -2,8 +2,7 @@
 import pygame
 import os
 from config import *
-from Editor.editor import *
-from Editor.Ui.ui import *
+from Editor.editor import Editor
 
 # Setup
 os.system('cls')
@@ -54,7 +53,7 @@ while running:
                 editor.setCurrentBlock('Box')
             
             if event.key == pygame.K_t:
-                editor.ui.addPage(editor.ui.createPage(["Grass", "Grass", "Grass", "Grass", "Grass", "Grass", "Grass", "Grass",]))
+                editor.ui.addPage(editor.ui.createPage(standardUiPageOne))
                 print(editor.ui.pages)
             
             if event.key == pygame.K_p:
