@@ -1,5 +1,6 @@
 import pygame
 from config import blockW, blockH
+from functions import howManyTrueIn
 
 class Block(pygame.sprite.Sprite):
     def __init__(self, pos, filename):
