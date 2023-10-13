@@ -52,6 +52,12 @@ while running:
             if event.key == pygame.K_2:
                 editor.setCurrentBlock('Box')
             
+            if event.key == pygame.K_3:
+                editor.setCurrentBlock('Stone')
+            
+            if event.key == pygame.K_4:
+                editor.setCurrentBlock('Sand')
+            
             if event.key == pygame.K_t:
                 editor.ui.addPage(editor.ui.createPage(standardUiPageOne))
                 print(editor.ui.pages)

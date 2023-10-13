@@ -4,8 +4,10 @@ from Editor.Map.map import Map
 from Editor.OrigoDot.origoDot import OrigoDot
 from Editor.Map.Block.FullBlock.Materials.grass import Grass
 from Editor.Map.Block.FullBlock.Materials.box import Box
+from Editor.Map.Block.FullBlock.Materials.sand import Sand
+from Editor.Map.Block.FullBlock.Materials.stone import Stone
 from Editor.Ui.ui import Ui
-from config import blockW, blockH, mapScreenX, mapScreenY
+from config import blockW, blockH, mapScreenX, mapScreenY, screen
 
 class Editor():
     def __init__(self):
@@ -44,8 +46,12 @@ class Editor():
             self.map.blocks.add(Box(pos))
         if self.currentBlock == 'Grass':
             self.map.blocks.add(Grass(pos))
+        if self.currentBlock == 'Sand':
+            self.map.blocks.add(Sand(pos))
+        if self.currentBlock == 'Stone':
+            self.map.blocks.add(Stone(pos))
         #updates blocks around and self
-        blocksAround = self.checkIfSameBlocksAround(pos)
+        blocksAround = self.checkIfBlocksAround(pos)
         if self.getBlockAtPos(pos) != "Air":
             self.getBlockAtPos(pos).update(blocksAround)
         self.updateBlocksAround(pos)
