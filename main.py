@@ -57,6 +57,15 @@ while running:
             
             if event.key == pygame.K_4:
                 editor.setCurrentBlock('Sand')
+
+            if event.key == pygame.K_5:
+                editor.setCurrentBlock('Snow')
+            
+            if event.key == pygame.K_6:
+                editor.setCurrentBlock('Dirt')
+            
+            if event.key == pygame.K_7:
+                editor.setCurrentBlock('Castle')
             
             if event.key == pygame.K_t:
                 editor.ui.addPage(editor.ui.createPage(standardUiPageOne))

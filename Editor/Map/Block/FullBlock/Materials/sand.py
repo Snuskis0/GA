@@ -1,4 +1,4 @@
-from Editor.Map.Block.FullBlock.fullBlock import *
+from Editor.Map.Block.FullBlock.fullBlock import FullBlock
 
 class Sand(FullBlock):
     def __init__(self, pos):

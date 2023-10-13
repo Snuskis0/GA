@@ -6,6 +6,9 @@ from Editor.Map.Block.FullBlock.Materials.grass import Grass
 from Editor.Map.Block.FullBlock.Materials.box import Box
 from Editor.Map.Block.FullBlock.Materials.sand import Sand
 from Editor.Map.Block.FullBlock.Materials.stone import Stone
+from Editor.Map.Block.FullBlock.Materials.snow import Snow
+from Editor.Map.Block.FullBlock.Materials.castle import Castle
+from Editor.Map.Block.FullBlock.Materials.dirt import Dirt
 from Editor.Ui.ui import Ui
 from config import blockW, blockH, mapScreenX, mapScreenY, screen
 
@@ -50,6 +53,12 @@ class Editor():
             self.map.blocks.add(Sand(pos))
         if self.currentBlock == 'Stone':
             self.map.blocks.add(Stone(pos))
+        if self.currentBlock == 'Castle':
+            self.map.blocks.add(Castle(pos))
+        if self.currentBlock == 'Dirt':
+            self.map.blocks.add(Dirt(pos))
+        if self.currentBlock == 'Snow':
+            self.map.blocks.add(Snow(pos))
         #updates blocks around and self
         blocksAround = self.checkIfBlocksAround(pos)
         if self.getBlockAtPos(pos) != "Air":
