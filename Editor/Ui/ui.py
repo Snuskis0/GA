@@ -42,7 +42,7 @@ class Ui(pygame.sprite.Sprite):
         
         for x in range(2):
             for y in range(4):
-                blockToAdd = MatCell((mapScreenX + (editorScreenX/3)*(x+1), 0 + (editorScreenY/5)*(y+1)), items[counter]) 
+                blockToAdd = MatCell((mapScreenX + (editorScreenX/3)*(x+1), 0 + (editorScreenY/8)*(y+1)+150), items[counter]) 
                 pageContent.add(blockToAdd)
                 counter += 1
         return pageContent
