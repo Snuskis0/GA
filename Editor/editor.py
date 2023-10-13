@@ -2,13 +2,7 @@ import pygame
 import json
 from Editor.Map.map import Map
 from Editor.OrigoDot.origoDot import OrigoDot
-from Editor.Map.Block.FullBlock.Materials.grass import Grass
-from Editor.Map.Block.FullBlock.Materials.box import Box
-from Editor.Map.Block.FullBlock.Materials.sand import Sand
-from Editor.Map.Block.FullBlock.Materials.stone import Stone
-from Editor.Map.Block.FullBlock.Materials.snow import Snow
-from Editor.Map.Block.FullBlock.Materials.castle import Castle
-from Editor.Map.Block.FullBlock.Materials.dirt import Dirt
+from Editor.dict import stringToClassDict
 from Editor.Ui.ui import Ui
 from config import blockW, blockH, mapScreenX, mapScreenY, screen
 
@@ -33,32 +27,20 @@ class Editor():
             self.map.blocks.empty()
             for pos, mat in data:
                 self.setCurrentBlock(mat)
-                self.placeObst(pos)
+                self.placeBlock(pos)
             self.origoDot.pos = (0, 0)
         for block in self.map.blocks:
             self.updateBlock(block, self.checkIfBlocksAround(block.pos))
     
     def setBgSize(map, size):
         map.background = pygame.transform.scale(map.background, size)
-    
+
     def setCurrentBlock(self, block):
         self.currentBlock = block
     
-    def placeObst(self, pos):
-        if self.currentBlock == 'Box':
-            self.map.blocks.add(Box(pos))
-        if self.currentBlock == 'Grass':
-            self.map.blocks.add(Grass(pos))
-        if self.currentBlock == 'Sand':
-            self.map.blocks.add(Sand(pos))
-        if self.currentBlock == 'Stone':
-            self.map.blocks.add(Stone(pos))
-        if self.currentBlock == 'Castle':
-            self.map.blocks.add(Castle(pos))
-        if self.currentBlock == 'Dirt':
-            self.map.blocks.add(Dirt(pos))
-        if self.currentBlock == 'Snow':
-            self.map.blocks.add(Snow(pos))
+    def placeBlock(self, pos):
+        self.map.blocks.add(stringToClassDict[self.currentBlock](pos))
+        
         #updates blocks around and self
         blocksAround = self.checkIfBlocksAround(pos)
         if self.getBlockAtPos(pos) != "Air":
@@ -66,9 +48,10 @@ class Editor():
         self.updateBlocksAround(pos)
     
     def showGrid(self):
+        from main import blockW, blockH
         (offsetX, offsetY) = self.calcCornerOffset()
-        for x in range(20):
-            for y in range(10):
+        for x in range(int(mapScreenX/blockW)):
+            for y in range(int(mapScreenY/blockH)):
                 pygame.draw.line(screen, 'black', (0, y*blockH+offsetY),(mapScreenX, y*blockH+offsetY))
                 pygame.draw.line(screen, 'black', (x*blockW+offsetX, 0),(x*blockW+offsetX, mapScreenY))
     
@@ -85,7 +68,7 @@ class Editor():
         (x, y) = pos
         offsetX = self.origoDot.pos[0] % blockW
         offsetY = self.origoDot.pos[1] % blockH
-        # bugtesting here
+        # Magic equation, whiteboard (private) explains it roughly
         return ((int((x-offsetX+blockW)/blockW)-1)*blockW+offsetX, (int((y-offsetY+blockW)/blockH)-1)*blockH+offsetY)
     
     def calcCornerOffset(self):

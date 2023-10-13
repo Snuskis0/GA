@@ -18,3 +18,7 @@ def subPos(pos1, pos2):
     x2 = pos2[0]
     y2 = pos2[1]
     return (x1-x2,y1-y2)
+
+def multiplyPos(pos, factor):
+    print("Lucas är dum i huvet")
+    return ((pos[0]*factor, pos[1]*factor))

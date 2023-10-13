@@ -1,12 +1,15 @@
 # Imports
 import pygame
 import os
-from config import *
+from config import mapScreenX, standardUiPageOne, saveSpeedLimit, screen, blockW, blockH
 from Editor.editor import Editor
+from functions import howManyTrueIn
 
 # Setup
-os.system('cls')
-os.system('clear')
+try:
+    os.system('cls')
+except:
+    os.system('clear')
 pygame.init()
 
 clock = pygame.time.Clock()
@@ -24,48 +27,32 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        
+        if event.type == pygame.MOUSEWHEEL:
+            # Trying to make a zoom function
+            print(event.x, event.y)
+        
+        if howManyTrueIn(pygame.mouse.get_pressed()) > 0: # If mouse is pressed at all
+            if pygame.mouse.get_pressed()[0] and editor.getBlockAtMouse() == False and pygame.mouse.get_pos()[0] < mapScreenX:
+                editor.placeBlock(editor.calcGridCellCorner(pygame.mouse.get_pos()))
             
-        if pygame.mouse.get_pressed()[0] and editor.getBlockAtMouse() == False and pygame.mouse.get_pos()[0] < mapScreenX:
-            editor.placeObst(editor.calcGridCellCorner(pygame.mouse.get_pos()))
-        
-        if pygame.mouse.get_pressed()[2]:
-            relPos = pygame.mouse.get_rel()
-            editor.map.addPosAllBlocks(relPos)
-            editor.origoDot.updatePos(relPos)
-         
-        if pygame.mouse.get_pressed()[1] and editor.getBlockAtMouse() != False:
-            editor.getBlockAtMouse().kill()
-            editor.updateBlocksAround(pygame.mouse.get_pos())
-        
-        if pygame.mouse.get_pressed()[0]:
-            if editor.ui.checkIfHovered():
-                for block in editor.ui.uiBlocks:
-                    if block.checkIfHovered():
-                        print(block, "clicked!")
+            if pygame.mouse.get_pressed()[2]:
+                relPos = pygame.mouse.get_rel()
+                editor.map.addPosAllBlocks(relPos)
+                editor.origoDot.updatePos(relPos)
+            
+            if pygame.mouse.get_pressed()[1] and editor.getBlockAtMouse() != False:
+                editor.getBlockAtMouse().kill()
+                editor.updateBlocksAround(pygame.mouse.get_pos())
+            
+            if pygame.mouse.get_pressed()[0]:
+                if editor.ui.checkIfHovered():
+                    for block in editor.ui.pages[editor.ui.currentPage]:
+                        if block.checkIfHovered():
+                            editor.setCurrentBlock(block.mat)
         
         if event.type == pygame.KEYDOWN:
             keys = pygame.key.get_pressed()
-    
-            if event.key == pygame.K_1:
-                editor.setCurrentBlock('Grass')
-            
-            if event.key == pygame.K_2:
-                editor.setCurrentBlock('Box')
-            
-            if event.key == pygame.K_3:
-                editor.setCurrentBlock('Stone')
-            
-            if event.key == pygame.K_4:
-                editor.setCurrentBlock('Sand')
-
-            if event.key == pygame.K_5:
-                editor.setCurrentBlock('Snow')
-            
-            if event.key == pygame.K_6:
-                editor.setCurrentBlock('Dirt')
-            
-            if event.key == pygame.K_7:
-                editor.setCurrentBlock('Castle')
             
             if event.key == pygame.K_t:
                 editor.ui.addPage(editor.ui.createPage(standardUiPageOne))
@@ -78,35 +65,34 @@ while running:
                 print(callCounter)
                 print("")
 
-            if keys[pygame.K_l] and keys[pygame.K_c] and saveTicker == 0:
+            if keys[pygame.K_LCTRL] and keys[pygame.K_c] and saveTicker == 0:
                 editor.map.blocks.empty()
                 saveTicker = saveSpeedLimit
             
-            #Save/Load 1
-            if keys[pygame.K_1] and keys[pygame.K_l] and saveTicker == 0 :
-                editor.load(1)
-                saveTicker = saveSpeedLimit
-            
-            if keys[pygame.K_1] and keys[pygame.K_k] and saveTicker == 0:
-                editor.save(1)
-                saveTicker = saveSpeedLimit
-            #Save/Load 2
-            if keys[pygame.K_2] and keys[pygame.K_l] and saveTicker == 0 :
-                editor.load(2)
-                saveTicker = saveSpeedLimit
-            
-            if keys[pygame.K_2] and keys[pygame.K_k] and saveTicker == 0:
-                editor.save(2)
-                saveTicker = saveSpeedLimit
-            #Save/Load 3
-            if keys[pygame.K_3] and keys[pygame.K_l] and saveTicker == 0 :
-                editor.load(3)
-                saveTicker = saveSpeedLimit
-            
-            if keys[pygame.K_3] and keys[pygame.K_k] and saveTicker == 0:
-                editor.save(3)
-                saveTicker = saveSpeedLimit
-
+            # Saves
+            # No saveticker currently
+            if keys[pygame.K_k]:
+                if keys[pygame.K_1]: 
+                    editor.save(1)
+                    saveTicker = saveSpeedLimit
+                if keys[pygame.K_2]: 
+                    editor.save(2)
+                    saveTicker = saveSpeedLimit
+                if keys[pygame.K_3]: 
+                    editor.save(3)
+                    saveTicker = saveSpeedLimit
+            #Loads
+            #No saveticker currently
+            if keys[pygame.K_l]:
+                if keys[pygame.K_1]: 
+                    editor.load(1)
+                    saveTicker = saveSpeedLimit
+                if keys[pygame.K_2]: 
+                    editor.load(2)
+                    saveTicker = saveSpeedLimit
+                if keys[pygame.K_3]: 
+                    editor.load(3)
+                    saveTicker = saveSpeedLimit
 
     # Drawing order
     screen.fill('White')
@@ -116,7 +102,6 @@ while running:
     
     pygame.draw.circle(screen, 'black', pygame.mouse.get_pos(), 3)
 
-    
     # EndVariables
     if saveTicker > 0:
         saveTicker -= 1

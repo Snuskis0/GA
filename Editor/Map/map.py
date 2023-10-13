@@ -1,6 +1,6 @@
 import pygame
 import json
-from functions import addPos, subPos
+from functions import addPos, subPos, multiplyPos
 from config import mapX, mapY, screen
 
 class Map():
@@ -12,6 +12,12 @@ class Map():
     def render(self):
         screen.blit(self.background, self.rect)
         self.blocks.draw(screen)
+    
+    def multiplyPosAllBlocks(self, factor):
+        for block in self.blocks:
+            block.rect[0] *= factor
+            block.rect[1] *= factor
+            block.pos = multiplyPos(block.pos, factor)
     
     def addPosAllBlocks(self, add):
         for block in self.blocks:
