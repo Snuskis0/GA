@@ -17,7 +17,6 @@ class Ui(pygame.sprite.Sprite):
         self.pages.append(self.createPage(standardUiPageOne))
         self.pageSelectors = pygame.sprite.Group()
         self.addPageSelectors()
-        print(self.pageSelectors())
         
     
     def render(self):
@@ -29,7 +28,7 @@ class Ui(pygame.sprite.Sprite):
     
     def addPageSelectors(self):
         for i in range(5):
-            self.pageSelectors.add(PageSelector((mapScreenX+50+blockW*i, editorScreenY-100), (i+1)))
+            self.pageSelectors.add(PageSelector((mapScreenX+50+blockW*i, editorScreenY-50), (i+1)))
     
     def checkIfHovered(self):
         if pygame.Rect.collidepoint(self.backgroundRect, pygame.mouse.get_pos()):

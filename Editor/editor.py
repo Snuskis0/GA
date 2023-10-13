@@ -1,5 +1,5 @@
 import pygame
-from Editor.Map.map import mapX
+from Editor.Map.map import Map
 from Editor.OrigoDot.origoDot import OrigoDot
 from Editor.Map.Block.FullBlock.Materials.grass import Grass
 from Editor.Map.Block.FullBlock.Materials.box import Box

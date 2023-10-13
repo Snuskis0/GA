@@ -1,6 +1,6 @@
 import pygame
 
-class PageSelector(pygame.sprite.Sprite()):
+class PageSelector(pygame.sprite.Sprite):
     def __init__(self, pos, id):
         super().__init__()
         self.pos = pos
