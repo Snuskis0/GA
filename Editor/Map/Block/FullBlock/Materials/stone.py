@@ -1,7 +1,7 @@
 from Editor.Map.Block.FullBlock.fullBlock import *
 
-class Grass(FullBlock):
+class Stone(FullBlock):
     def __init__(self, pos):
         self.shouldUpdate = True
-        baseFileName = 'grass.png'
+        baseFileName = 'stone.png'
         super().__init__(pos, self.shouldUpdate, baseFileName)

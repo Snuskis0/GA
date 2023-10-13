@@ -3,15 +3,20 @@ from config import blockW, blockH
 from functions import howManyTrueIn
 
 class Block(pygame.sprite.Sprite):
-    def __init__(self, pos, filename):
+    def __init__(self, pos, shouldUpdate, baseFileName):
         super().__init__()
-        self.filename = filename
+        # All blocks look like grass, untill updated
+        self.filename = baseFileName
+        self.shouldUpdate = shouldUpdate
         self.pos = pos
         self.image = pygame.image.load(f'Graphics/Tiles/{self.filename}')
         self.image = pygame.transform.scale(self.image,(blockW,blockH))
         self.rect = self.image.get_rect(topleft = self.pos)
     
     def update(self, blocksAround):
+        print(self.shouldUpdate)
+        if self.shouldUpdate == False:
+            return None
         # Gets classname in lowercase (materials name)
         matName = self.__class__.__name__.lower()
         
@@ -63,3 +68,4 @@ class Block(pygame.sprite.Sprite):
         self.filename = f'{matName}{form}.png'                   
         #updates img of instance
         self.image = pygame.image.load(f'Graphics/Tiles/{self.filename}')
+        self.image = pygame.transform.scale(self.image,(blockW,blockH))

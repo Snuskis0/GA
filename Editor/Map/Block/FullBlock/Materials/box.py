@@ -2,4 +2,6 @@ from Editor.Map.Block.FullBlock.fullBlock import *
 
 class Box(FullBlock):
     def __init__(self, pos):
-        super().__init__(pos, 'box.png')
+        self.shouldUpdate = False
+        baseFileName = 'box.png'
+        super().__init__(pos, self.shouldUpdate, baseFileName)
