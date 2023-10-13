@@ -14,7 +14,6 @@ class Block(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = self.pos)
     
     def update(self, blocksAround):
-        print(self.shouldUpdate)
         if self.shouldUpdate == False:
             return None
         # Gets classname in lowercase (materials name)
