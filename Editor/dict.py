@@ -11,12 +11,21 @@ from Editor.Map.Block.FullBlock.Materials.Choco import Choco
 
 stringToClassDict = {
     "Grass": Grass,
+    "grass": Grass,
     "Dirt": Dirt,
+    "dirt": Dirt,
     "Castle": Castle,
+    "castle": Castle,
     "Sand": Sand,
+    "sand":Sand,
     "Snow": Snow,
+    "snow": Snow,
     "Stone": Stone,
+    "stone": Stone,
     "Tundra": Tundra,
+    "tundra": Tundra,
     "Cake": Cake,
-    "Choco": Choco
+    "cake": Cake,
+    "Choco": Choco,
+    "choco": Choco
 }

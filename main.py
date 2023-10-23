@@ -8,10 +8,8 @@ from functions import howManyTrueIn
 # This is the working version (Home PC)
 
 # Setup
-try:
-    os.system('cls')
-except:
-    os.system('clear')
+os.system('cls')
+os.system('clear')
 pygame.init()
 
 clock = pygame.time.Clock()
