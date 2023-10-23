@@ -25,7 +25,12 @@ class Ui(pygame.sprite.Sprite):
         pygame.draw.line(screen, 'Black', self.pos, self.barrierBottomPos, 1)
         self.pageSelectors.draw(screen)
         if self.pages != []:
-            self.pages[self.currentPage].draw(screen)
+            for block in self.pages:
+                try:
+                    block.draw(screen)
+                except:
+                    print("Block not of right type")
+            # self.pages[self.currentPage].draw(screen)
     
     def addPageSelectors(self):
         for i in range(5):
@@ -47,7 +52,6 @@ class Ui(pygame.sprite.Sprite):
                     xPos = mapScreenX + editorScreenX/(blockSelectorXAmount+1)*(x+1)
                     yPos = 0 + editorScreenY - ((y+1)*blockSelectorYAmount*30)-30
                     blockToAdd = MatCell((xPos, yPos), items[counter])
-                    #blockToAdd = MatCell((mapScreenX + (editorScreenX/3)*(x+1), 0 + (editorScreenY/8)*(y+1)+150), items[counter]) 
                     pageContent.add(blockToAdd)
                     counter += 1
             return pageContent
