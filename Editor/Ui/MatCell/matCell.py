@@ -5,7 +5,7 @@ class MatCell(pygame.sprite.Sprite):
     def __init__(self, pos, mat):
         super().__init__()
         self.pos = pos
-        self.mat = mat
+        self.mat = mat.lower()
         self.image = pygame.image.load(f"Graphics/Tiles/{self.mat}.png") 
         self.image = pygame.transform.scale(self.image, (blockW-20, blockH-20))
         self.rect = self.image.get_rect(center = self.pos)

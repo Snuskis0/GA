@@ -26,11 +26,11 @@ class Ui(pygame.sprite.Sprite):
         self.pageSelectors.draw(screen)
         if self.pages != []:
             for block in self.pages:
+                print(block)
                 try:
                     block.draw(screen)
                 except:
                     print("Block not of right type")
-            # self.pages[self.currentPage].draw(screen)
     
     def addPageSelectors(self):
         for i in range(5):
