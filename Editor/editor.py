@@ -5,6 +5,7 @@ from Editor.OrigoDot.origoDot import OrigoDot
 from Editor.dict import stringToClassDict
 from Editor.Ui.ui import Ui
 from Editor.Player.player import Player
+from Editor.PreviewBlock.previewBlock import PreviewBlock
 from config import blockW, blockH, mapScreenX, mapScreenY, screen
 
 class Editor():
@@ -15,9 +16,25 @@ class Editor():
         self.currentBlock = "Grass"
         self.players = pygame.sprite.Group()
         self.players.add(Player((100, 100)))
+        self.previewBlock = PreviewBlock((0, 0), self.currentBlock)
+    
+    def update(self, mousePos):
+        for player in self.players:
+            player.update()
+        previewBlockPos = self.calcGridCellCorner(mousePos)
+        self.previewBlock.update(previewBlockPos, self.currentBlock, self.checkIfBlocksAround(previewBlockPos))
+    
+    def getPlayer(self, nr):
+        try: 
+            for player in self.players.sprites():
+                if player.nr == nr:
+                    return player
+        except:
+            return False
     
     def render(self):
         self.map.render()
+        self.previewBlock.render()
         self.players.draw(screen)
         self.origoDot.render()
         self.ui.render()

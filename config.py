@@ -23,3 +23,6 @@ origoDotRadius = 5
 # Ui
 blockSelectorXAmount = 3
 blockSelectorYAmount = 3
+
+# Player
+gravity = 1/2
