@@ -5,3 +5,7 @@ The save function should save the editor object as json (formatted)
 Make "ghostblock" at cursor (current block), snaps to visualise where it will be placed (opacity 50-70%?)
 
 Show "Selected block" somewhere (around ui blocks or seperate cell?)
+
+Remove preview block when over other block
+
+When making player move, add a (moving) state to make it continous (reserch more)

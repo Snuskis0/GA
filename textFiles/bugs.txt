@@ -6,3 +6,5 @@ Guaranteed bugged after cameraMove with graphics
 
 Problem when finding blocks, sometimes use collide / sometimes use pos =
 ? (unsure, could be solution to above problem block.pos always stays the same, even after moving camera)
+
+PlaceBlock places on other blocks sometimes after I added preview blocks???? (preview blocks =! air?)

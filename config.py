@@ -25,4 +25,5 @@ blockSelectorXAmount = 3
 blockSelectorYAmount = 3
 
 # Player
-gravity = 1/2
+gravityScaler = 1/2
+maxGravity = 50

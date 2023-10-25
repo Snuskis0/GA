@@ -58,9 +58,6 @@ while running:
         # Key events
         if event.type == pygame.KEYDOWN:
             keys = pygame.key.get_pressed()
-            
-            if keys[pygame.K_w]:
-                editor.getPlayer(1).movePlayer((2, 2))
                             
             if event.key == pygame.K_p:
                 #used for bugtesting
@@ -68,6 +65,7 @@ while running:
                 
                 print(callCounter)
                 print("")
+                print(editor.getBlockAtMouse())
 
             if keys[pygame.K_LCTRL] and keys[pygame.K_c] and saveTicker == 0:
                 editor.map.blocks.empty()

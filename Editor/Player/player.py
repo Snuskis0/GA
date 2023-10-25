@@ -1,5 +1,5 @@
 import pygame
-from config import screen, gravity
+from config import screen, gravityScaler, maxGravity
 from functions import addPos
 
 class Player(pygame.sprite.Sprite):
@@ -12,6 +12,8 @@ class Player(pygame.sprite.Sprite):
         self.velocity = (0, 0)
     
     def update(self):
+        self.applyGravity()
+        self.updatePos()
         self.rect.topleft = self.pos
     
     def render(self):
@@ -20,5 +22,12 @@ class Player(pygame.sprite.Sprite):
     def move(self, amount):
         self.pos = addPos(self.pos, amount)
     
+    def updatePos(self):
+        self.pos = addPos(self.pos, self.velocity)
+    
     def applyGravity(self):
-        self.pos = addPos(self.pos, (0, gravity))
+        temp = self.velocity[0]
+        if self.velocity[1] < maxGravity:
+            self.velocity = addPos(self.velocity, (0, gravityScaler))
+            if self.velocity[1] > maxGravity:
+                self.velocity = (temp, maxGravity)
