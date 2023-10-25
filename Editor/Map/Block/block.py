@@ -5,7 +5,7 @@ from functions import howManyTrueIn
 class Block(pygame.sprite.Sprite):
     def __init__(self, pos, shouldUpdate, baseFileName):
         super().__init__()
-        # All blocks look like grass, untill updated
+        # All blocks look like grass, until updated
         self.filename = baseFileName
         self.shouldUpdate = shouldUpdate
         self.pos = pos

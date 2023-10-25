@@ -25,9 +25,7 @@ class Ui(pygame.sprite.Sprite):
         pygame.draw.line(screen, 'Black', self.pos, self.barrierBottomPos, 1)
         self.pageSelectors.draw(screen)
         if self.pages != []:
-            print(self.pages)
             for block in self.pages:
-                print(block)
                 try:
                     block.draw(screen)
                 except:

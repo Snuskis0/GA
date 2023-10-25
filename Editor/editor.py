@@ -4,6 +4,7 @@ from Editor.Map.map import Map
 from Editor.OrigoDot.origoDot import OrigoDot
 from Editor.dict import stringToClassDict
 from Editor.Ui.ui import Ui
+from Editor.Player.player import Player
 from config import blockW, blockH, mapScreenX, mapScreenY, screen
 
 class Editor():
@@ -12,6 +13,14 @@ class Editor():
         self.origoDot = OrigoDot()
         self.ui = Ui()
         self.currentBlock = "Grass"
+        self.players = pygame.sprite.Group()
+        self.players.add(Player((100, 100)))
+    
+    def render(self):
+        self.map.render()
+        self.players.draw(screen)
+        self.origoDot.render()
+        self.ui.render()
     
     def updateBlock(self, block, blocksAround):
         block.update(blocksAround)

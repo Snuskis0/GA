@@ -95,10 +95,7 @@ while running:
                     saveTicker = saveSpeedLimit
 
     # Drawing order
-    screen.fill('White')
-    editor.map.render()
-    editor.origoDot.render()
-    editor.ui.render()
+    editor.render()
     
     pygame.draw.circle(screen, 'black', pygame.mouse.get_pos(), 3)
 

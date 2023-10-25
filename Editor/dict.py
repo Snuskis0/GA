@@ -7,7 +7,7 @@ from Editor.Map.Block.FullBlock.Materials.castle import Castle
 from Editor.Map.Block.FullBlock.Materials.dirt import Dirt
 from Editor.Map.Block.FullBlock.Materials.tundra import Tundra
 from Editor.Map.Block.FullBlock.Materials.cake import Cake
-from Editor.Map.Block.FullBlock.Materials.Choco import Choco
+from Editor.Map.Block.FullBlock.Materials.choco import Choco
 
 stringToClassDict = {
     "Grass": Grass,
