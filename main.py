@@ -20,6 +20,10 @@ player1 = editor.getPlayer(1)
 saveTicker = 0
 callCounter = 0
 
+for i in range(5):
+    if editor.getBlockAtPos((70,70)) == False:
+        editor.placeBlock(editor.calcGridCellCorner((70, 70)))
+
 # Main
 while running:
     pygame.mouse.get_rel()
@@ -36,14 +40,13 @@ while running:
             print(event.x, event.y)
         
         if howManyTrueIn(pygame.mouse.get_pressed()) > 0: # If mouse is pressed at all
-            if pygame.mouse.get_pressed()[0] and editor.getBlockAtMouse() == False and mousePos[0] < mapScreenX:
+            if pygame.mouse.get_pressed()[0] and editor.getBlockAtPos(editor.calcGridCellCorner(mousePos)) == False and mousePos[0] < mapScreenX:
                 editor.placeBlock(editor.calcGridCellCorner(mousePos))
             
             if pygame.mouse.get_pressed()[2]:
                 relPos = pygame.mouse.get_rel()
                 editor.map.addPosAllBlocks(relPos)
                 editor.origoDot.updatePos(relPos)
-                player1.move(relPos)
             
             if pygame.mouse.get_pressed()[1] and editor.getBlockAtMouse() != False:
                 editor.getBlockAtMouse().kill()
@@ -56,9 +59,15 @@ while running:
                             editor.setCurrentBlock(block.mat)
         
         # Key events
+        keys = pygame.key.get_pressed()
+        # Continous
+        if keys[pygame.K_r]:
+            player1.rect.center = pygame.mouse.get_pos()
+            player1.velocity = (0,0)
+        
+        # Single
         if event.type == pygame.KEYDOWN:
-            keys = pygame.key.get_pressed()
-                            
+        
             if event.key == pygame.K_p:
                 #used for bugtesting
                 callCounter += 1
@@ -97,15 +106,15 @@ while running:
                     saveTicker = saveSpeedLimit
 
     # Events
+    
+    
     editor.update(mousePos)
     
     # Drawing order
     editor.render()
-    
     pygame.draw.circle(screen, 'black', mousePos, 3)
 
     # EndVariables
-    player1.applyGravity()
     
     if saveTicker > 0:
         saveTicker -= 1

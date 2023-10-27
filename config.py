@@ -26,4 +26,4 @@ blockSelectorYAmount = 3
 
 # Player
 gravityScaler = 1/2
-maxGravity = 50
+maxGravity = 2

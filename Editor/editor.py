@@ -73,19 +73,11 @@ class Editor():
             self.getBlockAtPos(pos).update(blocksAround)
         self.updateBlocksAround(pos)
     
-    def showGrid(self):
-        from main import blockW, blockH
-        (offsetX, offsetY) = self.calcCornerOffset()
-        for x in range(int(mapScreenX/blockW)):
-            for y in range(int(mapScreenY/blockH)):
-                pygame.draw.line(screen, 'black', (0, y*blockH+offsetY),(mapScreenX, y*blockH+offsetY))
-                pygame.draw.line(screen, 'black', (x*blockW+offsetX, 0),(x*blockW+offsetX, mapScreenY))
-    
     def getBlockAtMouse(self):
-        mouseX = pygame.mouse.get_pos()[0]
-        mouseY = pygame.mouse.get_pos()[1]
+        (mouseX, mouseY) = pygame.mouse.get_pos()
         for block in self.map.blocks:
             if block.rect.collidepoint((mouseX, mouseY)):
+                print("Block: ", block.rect)
                 return block
         return False
     
