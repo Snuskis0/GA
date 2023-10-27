@@ -77,7 +77,6 @@ class Editor():
         (mouseX, mouseY) = pygame.mouse.get_pos()
         for block in self.map.blocks:
             if block.rect.collidepoint((mouseX, mouseY)):
-                print("Block: ", block.rect)
                 return block
         return False
     

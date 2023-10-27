@@ -35,9 +35,6 @@ while running:
             running = False
         
         # Mouse events
-        if event.type == pygame.MOUSEWHEEL:
-            # Trying to make a zoom function
-            print(event.x, event.y)
         
         if howManyTrueIn(pygame.mouse.get_pressed()) > 0: # If mouse is pressed at all
             if pygame.mouse.get_pressed()[0] and editor.getBlockAtPos(editor.calcGridCellCorner(mousePos)) == False and mousePos[0] < mapScreenX:
