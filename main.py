@@ -20,10 +20,6 @@ player1 = editor.getPlayer(1)
 saveTicker = 0
 callCounter = 0
 
-for i in range(5):
-    if editor.getBlockAtPos((70,70)) == False:
-        editor.placeBlock(editor.calcGridCellCorner((70, 70)))
-
 # Main
 while running:
     pygame.mouse.get_rel()
@@ -62,9 +58,13 @@ while running:
             player1.rect.center = pygame.mouse.get_pos()
             player1.velocity = (0,0)
         
+        if (keys[pygame.K_w] or keys[pygame.K_SPACE]) and player1.onGround:
+            print("Reached")
+            player1.jump()
+        
         # Single
         if event.type == pygame.KEYDOWN:
-        
+            
             if event.key == pygame.K_p:
                 #used for bugtesting
                 callCounter += 1
@@ -103,8 +103,6 @@ while running:
                     saveTicker = saveSpeedLimit
 
     # Events
-    
-    
     editor.update(mousePos)
     
     # Drawing order

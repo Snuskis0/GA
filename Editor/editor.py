@@ -15,12 +15,15 @@ class Editor():
         self.ui = Ui()
         self.currentBlock = "Grass"
         self.players = pygame.sprite.Group()
-        self.players.add(Player((100, 100)))
+        for i in range(3):
+            self.players.add(Player(((i+1)*100, 100), i+1))
         self.previewBlock = PreviewBlock((0, 0), self.currentBlock)
     
     def update(self, mousePos):
-        for player in self.players:
+        for player in self.players.sprites():
             player.update()
+        self.collisionLogic()
+        self.updateOnGround()
         previewBlockPos = self.calcGridCellCorner(mousePos)
         self.previewBlock.update(previewBlockPos, self.currentBlock, self.checkIfBlocksAround(previewBlockPos))
     
@@ -61,6 +64,28 @@ class Editor():
     def setBgSize(map, size):
         map.background = pygame.transform.scale(map.background, size)
 
+    def collisionLogic(self):
+        for player in self.players.sprites():
+            for block in self.map.blocks:
+                # Checks down
+                if player.velocity[1] > 0:
+                    if player.rect.colliderect(block.rect):
+                        player.rect.bottom = block.rect.top
+    
+    def updateOnGround(self):
+        for player in self.players.sprites():
+            blockFound = False
+            for block in self.map.blocks:
+                if player.rect.bottom == block.rect.top:
+                    blockFound = True
+                    break
+            if blockFound:
+                player.onGround = True
+            else:
+                player.onGround = False
+            # if player.nr == 1:
+            #     print(player.onGround)
+                    
     def setCurrentBlock(self, block):
         self.currentBlock = block
     
