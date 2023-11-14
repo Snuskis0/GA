@@ -1,5 +1,5 @@
 import pygame
-from config import screen, maxFallSpeed, fallSpeedScaler, jumpPower
+from config import screen, maxFallSpeed, fallSpeedScaler, jumpPower, friction, maxMoveSpeed, minXSpeed
 from functions import addPos
 
 class Player(pygame.sprite.Sprite):
@@ -12,11 +12,29 @@ class Player(pygame.sprite.Sprite):
         self.onGround = False
     
     def update(self):
-        self.fall()
+        self.fall()        
+        self.frictionLogic()
+        # Should be last
         self.updatePos()
     
     def move(self, amount):
         self.rect.topleft = addPos(self.rect.topleft, amount)
+    
+    def accel(self, amount):
+        self.velocity = addPos(self.velocity, amount)
+    
+    def limitedAccel(self, x):
+        (newX, y) = addPos(self.velocity, (x, 0))
+        if newX < -minXSpeed:
+            if abs(newX) > maxMoveSpeed:
+                newX = -maxMoveSpeed
+        if newX > minXSpeed:
+            if newX > maxMoveSpeed:
+                newX = maxMoveSpeed
+        self.velocity = (newX, y)
+        
+    def resetFall(self):
+        self.velocity = (self.velocity[0], 0)
     
     def render(self):
         self.draw(screen)
@@ -26,12 +44,20 @@ class Player(pygame.sprite.Sprite):
         self.velocity = (x, 0)
         self.velocity = addPos(self.velocity, (0, -jumpPower))
     
+    def frictionLogic(self):
+        (x, y) = self.velocity
+        x *= (1-friction)
+        if -minXSpeed < x < minXSpeed:
+            x = 0
+        self.velocity = (x, y)
+    
     def updatePos(self):
         self.rect.center = addPos(self.velocity, self.rect.center)
     
     def fall(self):
-        (x, y) = self.velocity
-        if y < maxFallSpeed:
-            self.velocity = addPos(self.velocity, (0, fallSpeedScaler))
-        if self.velocity[1] > maxFallSpeed:
-            self.velocity = (x, maxFallSpeed)
+        if self.onGround == False:
+            (x, y) = self.velocity
+            if y < maxFallSpeed:
+                self.velocity = addPos(self.velocity, (0, fallSpeedScaler))
+            if y > maxFallSpeed:
+                self.velocity = (x, maxFallSpeed)

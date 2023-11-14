@@ -22,8 +22,11 @@ class Editor():
     def update(self, mousePos):
         for player in self.players.sprites():
             player.update()
+        # Below only effects pos, updatePos in player.update is fine to call before
         self.collisionLogic()
         self.updateOnGround()
+        #All above is for player, change?
+        
         previewBlockPos = self.calcGridCellCorner(mousePos)
         self.previewBlock.update(previewBlockPos, self.currentBlock, self.checkIfBlocksAround(previewBlockPos))
     
@@ -71,6 +74,7 @@ class Editor():
                 if player.velocity[1] > 0:
                     if player.rect.colliderect(block.rect):
                         player.rect.bottom = block.rect.top
+                        player.resetFall()
     
     def updateOnGround(self):
         for player in self.players.sprites():
@@ -83,8 +87,6 @@ class Editor():
                 player.onGround = True
             else:
                 player.onGround = False
-            # if player.nr == 1:
-            #     print(player.onGround)
                     
     def setCurrentBlock(self, block):
         self.currentBlock = block

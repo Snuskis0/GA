@@ -8,3 +8,6 @@ Problem when finding blocks, sometimes use collide / sometimes use pos =
 ? (unsure, could be solution to above problem block.pos always stays the same, even after moving camera)
 
 PlaceBlock places on other blocks sometimes after I added preview blocks???? (preview blocks =! air?)
+
+LOWPRIO:
+When standing on ground (and sometimes holding, very rarely) and pressing jump, the player jumps the first frame, AND the second. Futher inspecton shows that the player1.jump is called twice in the same loop??? (print statement in same loop gets called twice, no idea why)
