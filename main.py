@@ -1,9 +1,9 @@
 # Imports
 import pygame
 import os
-from config import mapScreenX, standardUiPageOne, saveSpeedLimit, screen, blockW, blockH
+from config import mapScreenX, standardUiPageOne, saveSpeedLimit, screen, blockW, blockH, jumpPower, playerSpeed
 from Editor.editor import Editor
-from functions import howManyTrueIn
+from functions import howManyTrueIn, addPos
 
 # This is the working version (Home PC)
 
@@ -56,9 +56,12 @@ while running:
                             editor.setCurrentBlock(block.mat)
         
         # Key events
-        if event.type == pygame.KEYDOWN:
-            keys = pygame.key.get_pressed()
-                            
+        keys = pygame.key.get_pressed()
+        
+        # Continous events
+        
+        # One click events
+        if event.type == pygame.KEYDOWN:                
             if event.key == pygame.K_p:
                 #used for bugtesting
                 callCounter += 1
@@ -70,6 +73,9 @@ while running:
             if keys[pygame.K_LCTRL] and keys[pygame.K_c] and saveTicker == 0:
                 editor.map.blocks.empty()
                 saveTicker = saveSpeedLimit
+            
+            if keys[pygame.K_r]:
+                player1.rect.center = pygame.mouse.get_pos()
             
             # Saves
             # No saveticker currently
@@ -105,7 +111,6 @@ while running:
     pygame.draw.circle(screen, 'black', mousePos, 3)
 
     # EndVariables
-    player1.applyGravity()
     
     if saveTicker > 0:
         saveTicker -= 1

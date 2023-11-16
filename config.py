@@ -25,5 +25,10 @@ blockSelectorXAmount = 3
 blockSelectorYAmount = 3
 
 # Player
-gravityScaler = 1/2
-maxGravity = 50
+gravityScaler = 3
+maxSpeedY = 20
+speedDecline = 2
+jumpPower = 20
+playerSpeed = 5
+lowestSpeed = 1/5
+maxSpeedX = 10
