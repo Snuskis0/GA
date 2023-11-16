@@ -1,10 +1,1 @@
-block topright (left, under) bugged when removing blocks
-updateBlocksAround broken when grid moved
-
-getBlocksOneAround working, don't know what is broken (add offset somewhere?)
-Guaranteed bugged after cameraMove with graphics
-
-Problem when finding blocks, sometimes use collide / sometimes use pos =
-? (unsure, could be solution to above problem block.pos always stays the same, even after moving camera)
-
-PlaceBlock places on other blocks sometimes after I added preview blocks???? (preview blocks =! air?)
+onGround broke ONCE, can't replicate it (always True)
