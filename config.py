@@ -25,10 +25,11 @@ blockSelectorXAmount = 3
 blockSelectorYAmount = 3
 
 # Player
-gravityScaler = 3
-maxSpeedY = 20
-speedDecline = 2
+fallSpeedScaler = 1
+maxFallSpeed = 50
 jumpPower = 20
-playerSpeed = 5
-lowestSpeed = 1/5
-maxSpeedX = 10
+movementSpeed = 15
+# 0 < friction < 1, smaller number = less friction
+friction = 0.1
+maxMoveSpeed = 4
+minXSpeed = 1/4

@@ -16,12 +16,18 @@ class Editor():
         self.ui = Ui()
         self.currentBlock = "Grass"
         self.players = pygame.sprite.Group()
-        self.players.add(Player((100, 100)))
+        for i in range(3):
+            self.players.add(Player(((i+1)*100, 100), i+1))
         self.previewBlock = PreviewBlock((0, 0), self.currentBlock)
     
     def update(self, mousePos):
-        for player in self.players:
+        for player in self.players.sprites():
             player.update()
+        # Below only effects pos, updatePos in player.update is fine to call before
+        self.collisionLogic()
+        self.updateOnGround()
+        #All above is for player, change?
+        
         previewBlockPos = self.calcGridCellCorner(mousePos)
         self.previewBlock.update(previewBlockPos, self.currentBlock, self.checkIfBlocksAround(previewBlockPos))
     
@@ -62,6 +68,27 @@ class Editor():
     def setBgSize(map, size):
         map.background = pygame.transform.scale(map.background, size)
 
+    def collisionLogic(self):
+        for player in self.players.sprites():
+            for block in self.map.blocks:
+                # Checks down
+                if player.velocity[1] > 0:
+                    if player.rect.colliderect(block.rect):
+                        player.rect.bottom = block.rect.top
+                        player.resetFall()
+    
+    def updateOnGround(self):
+        for player in self.players.sprites():
+            blockFound = False
+            for block in self.map.blocks:
+                if player.rect.bottom == block.rect.top:
+                    blockFound = True
+                    break
+            if blockFound:
+                player.onGround = True
+            else:
+                player.onGround = False
+                    
     def setCurrentBlock(self, block):
         self.currentBlock = block
     
@@ -74,17 +101,8 @@ class Editor():
             self.getBlockAtPos(pos).update(blocksAround)
         self.updateBlocksAround(pos)
     
-    def showGrid(self):
-        from main import blockW, blockH
-        (offsetX, offsetY) = self.calcCornerOffset()
-        for x in range(int(mapScreenX/blockW)):
-            for y in range(int(mapScreenY/blockH)):
-                pygame.draw.line(screen, 'black', (0, y*blockH+offsetY),(mapScreenX, y*blockH+offsetY))
-                pygame.draw.line(screen, 'black', (x*blockW+offsetX, 0),(x*blockW+offsetX, mapScreenY))
-    
     def getBlockAtMouse(self):
-        mouseX = pygame.mouse.get_pos()[0]
-        mouseY = pygame.mouse.get_pos()[1]
+        (mouseX, mouseY) = pygame.mouse.get_pos()
         for block in self.map.blocks:
             if block.rect.collidepoint((mouseX, mouseY)):
                 return block
