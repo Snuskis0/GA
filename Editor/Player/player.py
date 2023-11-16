@@ -20,6 +20,11 @@ class Player(pygame.sprite.Sprite):
     def move(self, amount):
         self.rect.topleft = addPos(self.rect.topleft, amount)
     
+    def updateImg(self):
+        (x, y) = self.velocity
+        # if y < 0:
+            
+    
     def accel(self, amount):
         self.velocity = addPos(self.velocity, amount)
     
@@ -32,6 +37,7 @@ class Player(pygame.sprite.Sprite):
             if newX > maxMoveSpeed:
                 newX = maxMoveSpeed
         self.velocity = (newX, y)
+        
         
     def resetFall(self):
         self.velocity = (self.velocity[0], 0)
