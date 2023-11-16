@@ -44,17 +44,17 @@ while running:
             player1.rect.center = pygame.mouse.get_pos()
             player1.velocity = (0,0)
         
-        if (keyStates.get(pygame.K_w, False) or keyStates.get(pygame.K_SPACE, False)) and player1.onGround:
-            player1.jump()
-        
-        if keyStates.get(pygame.K_d, False):
-            player1.limitedAccel(movementSpeed)
-        
-        if keyStates.get(pygame.K_a, False):
-            player1.limitedAccel(-movementSpeed)
-    
     # End of event loop used for multiple events
     # Start of "Once events (Only allowed to happen ONCE per loop, multiple events caused the below code to run multiple times in some instances since no event.type is specified)"  
+    
+    if (keyStates.get(pygame.K_w, False) or keyStates.get(pygame.K_SPACE, False)) and player1.onGround:
+        player1.jump()
+        
+    if keyStates.get(pygame.K_d, False):
+        player1.limitedAccel(movementSpeed)
+        
+    if keyStates.get(pygame.K_a, False):
+        player1.limitedAccel(-movementSpeed)
     
     # Mouse events
     if howManyTrueIn(pygame.mouse.get_pressed()) > 0: # If mouse is pressed at all
@@ -80,6 +80,7 @@ while running:
                         
     # Events
     editor.update(mousePos)
+    print(int(clock.get_fps()))
     
     # Drawing order
     editor.render()
