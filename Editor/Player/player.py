@@ -1,5 +1,5 @@
 import pygame
-from config import screen, maxFallSpeed, fallSpeedScaler, jumpPower, friction, maxMoveSpeed, minXSpeed
+from config import screen, maxFallSpeed, fallSpeedScaler, jumpPower, friction, maxMoveSpeed, minXSpeed, blockW, blockH
 from functions import addPos
 
 class Player(pygame.sprite.Sprite):
@@ -7,19 +7,19 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.nr = nr
         self.image = pygame.image.load(f'./Graphics/Player/p{self.nr}_front.png') #72x97 default
+        self.image = pygame.transform.scale(self.image, (blockW*72/100, blockH*97/100))
         self.rect = self.image.get_rect(topleft = startPos)
         self.velocity = (0, 0)
         self.onGround = False
     
     def update(self, mapBlocks):
         self.fall()
-        # Remaking update function because it fucked up before
-        
         self.friction()
         self.updatePosX()
         self.collisionX(mapBlocks)
         self.updatePosY()
         self.collisionY(mapBlocks)
+        self.updateOnGround(mapBlocks)
     
     def collisionX(self, blocks):
         (x, y) = self.velocity
@@ -39,7 +39,15 @@ class Player(pygame.sprite.Sprite):
                     self.rect.bottom = block.rect.top
                 if y < 0:
                     self.rect.top = block.rect.bottom
-                self.velocity = (x, 0)    
+                self.velocity = (x, 0)
+                break
+    
+    def updateOnGround(self, blocks):
+        blockFound = False
+        for block in blocks:
+            if self.rect.bottom == block.rect.top and ((block.rect.left < self.rect.right < block.rect.right) or (block.rect.right > self.rect.left > block.rect.left)):
+                blockFound = True
+        self.onGround = blockFound
     
     def move(self, amount):
         self.rect.topleft = addPos(self.rect.topleft, amount)
@@ -48,7 +56,9 @@ class Player(pygame.sprite.Sprite):
         self.rect.center = addPos(self.rect.center, self.velocity)
     
     def jump(self):
-        self.velocity[1] = jumpPower
+        if self.onGround:
+            (x, y) = self.velocity
+            self.velocity = (x, -jumpPower) 
     
     def friction(self):
         (x, y) = self.velocity
@@ -82,11 +92,6 @@ class Player(pygame.sprite.Sprite):
     
     def render(self):
         self.draw(screen)
-    
-    def jump(self):
-        (x, y) = self.velocity
-        self.velocity = (x, 0)
-        self.velocity = addPos(self.velocity, (0, -jumpPower))
     
     def updatePosX(self):
         self.rect.centerx += self.velocity[0]

@@ -62,31 +62,6 @@ class Editor():
     
     def setBgSize(map, size):
         map.background = pygame.transform.scale(map.background, size)
-    
-    def updateOnGroundStatus(self):
-        for player in self.players.sprites():
-            blockFound = False
-            for block in self.map.blocks:
-                if player.rect.bottom == block.rect.top and ((block.rect.left < player.rect.right < block.rect.right) or (block.rect.right > player.rect.left > block.rect.left)):
-                    blockFound = True
-                    break
-            if blockFound:
-                onGround = True
-            else:
-                onGround = False
-            player.onGround = onGround
-    
-    def getOnGroundStatus(self, player):
-        blockFound = False
-        for block in self.map.blocks:
-            if player.rect.bottom == block.rect.top and (block.rect.left < player.rect.right < block.rect.right or block.rect.right > player.rect.left > block.rect.left):
-                blockFound = True
-                break
-        if blockFound:
-            onGround = True
-        else:
-            onGround = False
-        return onGround
                     
     def setCurrentBlock(self, block):
         self.currentBlock = block

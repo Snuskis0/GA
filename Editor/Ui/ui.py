@@ -1,5 +1,5 @@
 import pygame
-from config import mapScreenX, editorScreenX, editorScreenY, screen, blockW, blockH, standardUiPageOne, blockSelectorXAmount, blockSelectorYAmount, mainBlockLibrary
+from config import mapScreenX, editorScreenX, editorScreenY, screen, blockW, blockH, standardUiPageOne, blockSelectorXAmount, blockSelectorYAmount, mainBlockLibrary, UIblockW
 from functions import addPos
 from Editor.Ui.MatCell.matCell import MatCell
 from Editor.Ui.pageSelector.pageSelector import PageSelector
@@ -33,7 +33,7 @@ class Ui(pygame.sprite.Sprite):
     
     def addPageSelectors(self):
         for i in range(5):
-            self.pageSelectors.add(PageSelector((mapScreenX+50+blockW*i, editorScreenY-50), (i+1)))
+            self.pageSelectors.add(PageSelector((mapScreenX+50+70*i, editorScreenY-50), (i+1)))
     
     def checkIfHovered(self):
         if pygame.Rect.collidepoint(self.backgroundRect, pygame.mouse.get_pos()):

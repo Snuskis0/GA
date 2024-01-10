@@ -10,8 +10,8 @@ screen = pygame.display.set_mode((mapScreenX+editorScreenX, mapScreenY))
 # Editor
 mapX = 0
 mapY = 0
-blockW = 30 # 
-blockH = 30 # 
+blockW = 60
+blockH = 60
 placeSpeedLimit = 100 #milliseconds
 standardUiPageOne = ["Grass", "Dirt", "Castle", "Sand", "Snow", "Stone", "Tundra", "Cake", "Choco"]
 mainBlockLibrary = ["Grass", "Dirt", "Castle", "Sand", "Snow", "Stone", "Tundra", "Cake", "Choco"]
@@ -23,6 +23,8 @@ origoDotRadius = 5
 # Ui
 blockSelectorXAmount = 3
 blockSelectorYAmount = 3
+UIblockW = 80
+UIblockH = 80
 showFPS = False
 
 # Player

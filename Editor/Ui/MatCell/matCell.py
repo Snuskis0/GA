@@ -1,13 +1,13 @@
 import pygame
-from config import blockW, blockH
+from config import UIblockW, UIblockH
 
 class MatCell(pygame.sprite.Sprite):
     def __init__(self, pos, mat):
         super().__init__()
         self.pos = pos
         self.mat = mat.lower()
-        self.image = pygame.image.load(f"./Graphics/Tiles/{self.mat}.png") 
-        self.image = pygame.transform.scale(self.image, (blockW-20, blockH-20))
+        self.image = pygame.image.load(f"./Graphics/UI_Tiles/{self.mat}.png") 
+        self.image = pygame.transform.scale(self.image, (UIblockW-20, UIblockH-20))
         self.rect = self.image.get_rect(center = self.pos)
     
     def checkIfHovered(self):
