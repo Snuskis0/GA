@@ -1,1 +1,2 @@
 onGround broke ONCE, can't replicate it (always True)
+    Fixed, had to do with floor checking on only same x level (let me jump as long as player was on same x as other block)

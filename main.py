@@ -1,7 +1,7 @@
 # Imports
 import pygame
 import os
-from config import mapScreenX, standardUiPageOne, saveSpeedLimit, screen, blockW, blockH, movementSpeed, maxMoveSpeed
+from config import mapScreenX, standardUiPageOne, saveSpeedLimit, screen, blockW, blockH, movementSpeed, maxMoveSpeed, showFPS
 from Editor.editor import Editor
 from functions import howManyTrueIn
 
@@ -38,23 +38,45 @@ while running:
         elif event.type == pygame.KEYUP:
             keyStates[event.key] = False
         
-        # Key events
-        # Continous
-        if keyStates.get(pygame.K_r, False):
-            player1.rect.center = pygame.mouse.get_pos()
-            player1.velocity = (0,0)
-        
     # End of event loop used for multiple events
     # Start of "Once events (Only allowed to happen ONCE per loop, multiple events caused the below code to run multiple times in some instances since no event.type is specified)"  
     
-    if (keyStates.get(pygame.K_w, False) or keyStates.get(pygame.K_SPACE, False)) and player1.onGround:
-        player1.jump()
+    if keyStates.get(pygame.K_r, False):
+        player1.rect.center = pygame.mouse.get_pos()
+        player1.velocity = (0,0)
         
     if keyStates.get(pygame.K_d, False):
         player1.limitedAccel(movementSpeed)
         
     if keyStates.get(pygame.K_a, False):
         player1.limitedAccel(-movementSpeed)
+    
+    if (keyStates.get(pygame.K_w, False) or keyStates.get(pygame.K_SPACE, False)):
+        player1.jump()
+        
+    if saveTicker == 0:
+        if keyStates.get(pygame.K_l, False):
+            if keyStates.get(pygame.K_1, False):
+                editor.load(1)
+                saveTicker = saveSpeedLimit
+            if keyStates.get(pygame.K_2, False):
+                editor.load(2)
+                saveTicker = saveSpeedLimit
+            if keyStates.get(pygame.K_3, False):
+                editor.load(3)
+                saveTicker = saveSpeedLimit
+        if keyStates.get(pygame.K_k, False):
+            if keyStates.get(pygame.K_1, False):
+                editor.save(1)
+                saveTicker = saveSpeedLimit
+            if keyStates.get(pygame.K_2, False):
+                editor.save(2)
+                saveTicker = saveSpeedLimit
+            if keyStates.get(pygame.K_3, False):
+                editor.save(3)
+                saveTicker = saveSpeedLimit
+        if keyStates.get(pygame.K_c, False) and keyStates.get(pygame.K_LCTRL, False):
+            editor.map.blocks.empty()
     
     # Mouse events
     if howManyTrueIn(pygame.mouse.get_pressed()) > 0: # If mouse is pressed at all
@@ -77,10 +99,11 @@ while running:
                 for block in editor.ui.pages[editor.ui.currentPage]:
                     if block.checkIfHovered():
                         editor.setCurrentBlock(block.mat)
-                        
+    
     # Events
     editor.update(mousePos)
-    print(int(clock.get_fps()))
+    if showFPS:
+        print(int(clock.get_fps()))
     
     # Drawing order
     editor.render()

@@ -7,6 +7,7 @@ from Editor.Ui.ui import Ui
 from Editor.Player.player import Player
 from Editor.PreviewBlock.previewBlock import PreviewBlock
 from config import blockW, blockH, mapScreenX, mapScreenY, screen
+from functions import addPos
 
 class Editor():
     def __init__(self):
@@ -15,18 +16,13 @@ class Editor():
         self.ui = Ui()
         self.currentBlock = "Grass"
         self.players = pygame.sprite.Group()
-        for i in range(3):
+        for i in range(1):
             self.players.add(Player(((i+1)*100, 100), i+1))
         self.previewBlock = PreviewBlock((0, 0), self.currentBlock)
     
     def update(self, mousePos):
         for player in self.players.sprites():
-            player.update()
-        # Below only effects pos, updatePos in player.update is fine to call before
-        self.collisionLogic()
-        self.updateOnGround()
-        #All above is for player, change?
-        
+            player.update(self.map.blocks)
         previewBlockPos = self.calcGridCellCorner(mousePos)
         self.previewBlock.update(previewBlockPos, self.currentBlock, self.checkIfBlocksAround(previewBlockPos))
     
@@ -66,27 +62,31 @@ class Editor():
     
     def setBgSize(map, size):
         map.background = pygame.transform.scale(map.background, size)
-
-    def collisionLogic(self):
-        for player in self.players.sprites():
-            for block in self.map.blocks:
-                # Checks down
-                if player.velocity[1] > 0:
-                    if player.rect.colliderect(block.rect):
-                        player.rect.bottom = block.rect.top
-                        player.resetFall()
     
-    def updateOnGround(self):
+    def updateOnGroundStatus(self):
         for player in self.players.sprites():
             blockFound = False
             for block in self.map.blocks:
-                if player.rect.bottom == block.rect.top:
+                if player.rect.bottom == block.rect.top and ((block.rect.left < player.rect.right < block.rect.right) or (block.rect.right > player.rect.left > block.rect.left)):
                     blockFound = True
                     break
             if blockFound:
-                player.onGround = True
+                onGround = True
             else:
-                player.onGround = False
+                onGround = False
+            player.onGround = onGround
+    
+    def getOnGroundStatus(self, player):
+        blockFound = False
+        for block in self.map.blocks:
+            if player.rect.bottom == block.rect.top and (block.rect.left < player.rect.right < block.rect.right or block.rect.right > player.rect.left > block.rect.left):
+                blockFound = True
+                break
+        if blockFound:
+            onGround = True
+        else:
+            onGround = False
+        return onGround
                     
     def setCurrentBlock(self, block):
         self.currentBlock = block
