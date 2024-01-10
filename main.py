@@ -3,7 +3,7 @@ import pygame
 import os
 from config import mapScreenX, standardUiPageOne, saveSpeedLimit, screen, blockW, blockH, movementSpeed, maxMoveSpeed, showFPS
 from Editor.editor import Editor
-from functions import howManyTrueIn
+from functions import howManyTrueIn, addPos
 
 # This is the working version (Home PC)
 

@@ -128,6 +128,19 @@ class Editor():
                     return block
             return False
     
+    def getAllPlayers(self):
+        players = []
+        for player in self.players.sprites():
+            players.append(player)
+        return players
+                
+    def checkIfBlockAtPos(self, pos):
+        (x, y) = pos
+        for block in self.map.blocks:
+            if block.rect.collidepoint((pos)):
+                return True
+        return False
+
     def getBlocksOneAround(self, pos):
         # Returns block objects in order: Up, Down, Left, Right
         up = False
