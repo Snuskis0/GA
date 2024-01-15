@@ -1,12 +1,13 @@
 import pygame
 import json
 from functions import addPos, subPos, multiplyPos
-from config import mapX, mapY, screen
+from config import mapX, mapY, screen, mapScreenX, mapScreenY
 
 class Map():
     def __init__(self):
         self.blocks = pygame.sprite.Group()
         self.background = pygame.image.load('Graphics/Backgrounds/bg_grasslands.png')
+        self.background = pygame.transform.scale(self.background, (mapScreenX, mapScreenY))
         self.rect = self.background.get_rect(topleft = (mapX, mapY))
     
     def render(self):

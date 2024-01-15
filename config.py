@@ -1,17 +1,17 @@
 import pygame
 
 # Screen
-mapScreenX = 1024
-mapScreenY = 512
 editorScreenX = 400
+mapScreenX = round(1920/2)-editorScreenX # 1024 Default
+mapScreenY = round(1080/2) # 512 Default
 editorScreenY = mapScreenY
 screen = pygame.display.set_mode((mapScreenX+editorScreenX, mapScreenY))
 
 # Editor
 mapX = 0
 mapY = 0
-blockW = 70
-blockH = 70
+blockW = 40
+blockH = 40
 placeSpeedLimit = 100 #milliseconds
 standardUiPageOne = ["Grass", "Dirt", "Castle", "Sand", "Snow", "Stone", "Tundra", "Cake", "Choco"]
 mainBlockLibrary = ["Grass", "Dirt", "Castle", "Sand", "Snow", "Stone", "Tundra", "Cake", "Choco"]
@@ -28,11 +28,11 @@ UIblockH = 80
 showFPS = False
 
 # Player
-fallSpeedScaler = 1
-maxFallSpeed = 50
-jumpPower = 20
-movementSpeed = 2
+fallSpeedScaler = 0.8*blockH/70
+maxFallSpeed = 50*blockH/70
+jumpPower = 15*blockH/70
+movementSpeed = 2*blockH/70
 # Slows down this many pixels per frame
-friction = 1
-maxMoveSpeed = 10
-minXSpeed = 1/4
+friction = 1*blockW/70
+maxMoveSpeed = 8*blockW/70
+minXSpeed = 1/4*(blockW/70)

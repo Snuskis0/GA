@@ -63,10 +63,15 @@ class Player(pygame.sprite.Sprite):
     def friction(self):
         (x, y) = self.velocity
         newX = abs(x) - friction
+        if abs(x) < abs(friction):
+            newX = 0
+            # In case friction makes player go other way
         if x > 0:
             self.velocity = (newX, y)
         elif x < 0:
             self.velocity = (-newX, y)
+        else:
+            self.velocity = (0, y)
     
     def fall(self):
         if not self.onGround:
