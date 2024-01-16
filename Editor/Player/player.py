@@ -1,5 +1,5 @@
 import pygame
-from config import screen, maxFallSpeed, fallSpeedScaler, jumpPower, friction, maxMoveSpeed, minXSpeed, blockW, blockH
+from config import screen, maxFallSpeed, fallSpeedScaler, jumpPower, friction, maxMoveSpeed, minXSpeed, blockW, blockH, doubleJumpCDVal, playerW, playerH
 from functions import addPos
 
 class Player(pygame.sprite.Sprite):
@@ -7,12 +7,23 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.nr = nr
         self.image = pygame.image.load(f'./Graphics/Player/p{self.nr}_front.png') #72x97 default
-        self.image = pygame.transform.scale(self.image, (blockW*72/100, blockH*97/100))
+        self.image = pygame.transform.scale(self.image, (playerW, playerH))
+        self.imageLink = ""
+        self.animationTimer = 0
         self.rect = self.image.get_rect(topleft = startPos)
         self.velocity = (0, 0)
         self.onGround = False
+        self.doubleJump = False
+        self.doubleJumpCD = doubleJumpCDVal # Counts down to 0 and lower
+        self.frame = 1
+        self.prevAttrib = {
+            "onGround": self.onGround,
+            "velocity": self.velocity,
+        }
     
     def update(self, mapBlocks):
+        self.doubleJumpCD -= 1
+        self.animationTimer += 1
         self.fall()
         self.friction()
         self.updatePosX()
@@ -20,6 +31,56 @@ class Player(pygame.sprite.Sprite):
         self.updatePosY()
         self.collisionY(mapBlocks)
         self.updateOnGround(mapBlocks)
+        self.animationHandler()
+        self.updateAnimation()
+    
+    def animationHandler(self):
+        # Checks different critera; Determines what frame should be used;
+        
+        resetBool = False
+        
+        if self.prevAttrib["onGround"] != self.onGround:
+            self.frame = 1
+            resetBool = True
+        (x1, y1) = self.prevAttrib["velocity"]
+        (x2, y2) = self.velocity
+        
+        if x1*x2 < 0: # Switched direction
+            self.frame = 1
+            resetBool = True
+        
+        self.prevAttrib = {
+            "onGround": self.onGround,
+            "velocity": self.velocity,
+        }
+        if not resetBool:
+            self.frame += 1
+    
+    def updateAnimation(self):
+        (x, y) = self.velocity
+        # Walking
+        if self.onGround and x == 0:
+            self.image = pygame.image.load(f'./Graphics/Player/p{self.nr}_front.png')
+        if self.onGround and abs(x) > 0:
+            maxFrame = 11
+            if maxFrame < self.frame:
+                self.frame = 1            
+            # Walking right
+            if self.frame < 10:
+                self.image = pygame.image.load(f'./Graphics/Player/p{self.nr}_walk/PNG/p{self.nr}_walk0{self.frame}.png')
+            if self.frame >= 10:
+                self.image = pygame.image.load(f'./Graphics/Player/p{self.nr}_walk/PNG/p{self.nr}_walk{self.frame}.png')
+            
+            if x < 0: # Flip if left
+                self.image = pygame.transform.flip(self.image, True, False)
+        # Jumping (up)
+        if not self.onGround:
+            self.image = pygame.image.load(f'./Graphics/Player/p{self.nr}_jump.png')
+            if x < 0:
+                self.image = pygame.transform.flip(self.image, True, False)
+        
+        self.image = pygame.transform.scale(self.image, (playerW, playerH))
+
     
     def collisionX(self, blocks):
         (x, y) = self.velocity
@@ -47,6 +108,7 @@ class Player(pygame.sprite.Sprite):
         for block in blocks:
             if self.rect.bottom == block.rect.top and ((block.rect.left < self.rect.right < block.rect.right) or (block.rect.right > self.rect.left > block.rect.left)):
                 blockFound = True
+                self.doubleJump = True
         self.onGround = blockFound
     
     def move(self, amount):
@@ -56,9 +118,14 @@ class Player(pygame.sprite.Sprite):
         self.rect.center = addPos(self.rect.center, self.velocity)
     
     def jump(self):
-        if self.onGround:
+        if self.onGround or (self.doubleJump and self.doubleJumpCD <= 0):
             (x, y) = self.velocity
-            self.velocity = (x, -jumpPower) 
+            self.velocity = (x, -jumpPower)
+            self.doubleJumpCD = doubleJumpCDVal 
+            # If double jump
+            if self.onGround == False and self.doubleJump == True:
+                self.doubleJump = False
+                
     
     def friction(self):
         (x, y) = self.velocity

@@ -51,7 +51,7 @@ while running:
     if keyStates.get(pygame.K_a, False):
         player1.limitedAccel(-movementSpeed)
     
-    if (keyStates.get(pygame.K_w, False) or keyStates.get(pygame.K_SPACE, False)):
+    if ((keyStates.get(pygame.K_w, False) or keyStates.get(pygame.K_SPACE, False))):
         player1.jump()
         
     if saveTicker == 0:

@@ -1,7 +1,7 @@
 import pygame
 import json
 from functions import addPos, subPos, multiplyPos
-from config import mapX, mapY, screen, mapScreenX, mapScreenY
+from config import mapX, mapY, screen, mapScreenX, mapScreenY, blockW, blockH
 
 class Map():
     def __init__(self):
