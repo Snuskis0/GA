@@ -17,7 +17,6 @@ pygame.key.set_repeat(1, 1)
 running = True
 start_time = 0
 editor = Editor()
-player1 = editor.getPlayer(1)
 saveTicker = 0
 callCounter = 0
 # Pygame does not handle key_states the way I want/need, therefore I will make my own.
@@ -42,17 +41,17 @@ while running:
     # Start of "Once events (Only allowed to happen ONCE per loop, multiple events caused the below code to run multiple times in some instances since no event.type is specified)"  
     
     if keyStates.get(pygame.K_r, False):
-        player1.rect.center = pygame.mouse.get_pos()
-        player1.velocity = (0,0)
+        editor.getPlayer(1).rect.center = pygame.mouse.get_pos()
+        editor.getPlayer(1).velocity = (0,0)
         
     if keyStates.get(pygame.K_d, False):
-        player1.limitedAccel(movementSpeed)
+        editor.getPlayer(1).limitedAccel(movementSpeed)
         
     if keyStates.get(pygame.K_a, False):
-        player1.limitedAccel(-movementSpeed)
+        editor.getPlayer(1).limitedAccel(-movementSpeed)
     
     if ((keyStates.get(pygame.K_w, False) or keyStates.get(pygame.K_SPACE, False))):
-        player1.jump()
+        editor.getPlayer(1).jump()
         
     if saveTicker == 0:
         if keyStates.get(pygame.K_l, False):
@@ -104,6 +103,7 @@ while running:
     editor.update(mousePos)
     if showFPS:
         print(int(clock.get_fps()))
+    print(blockW, blockH)
     
     # Drawing order
     editor.render()

@@ -6,7 +6,7 @@ from Editor.dict import stringToClassDict
 from Editor.Ui.ui import Ui
 from Editor.Player.player import Player
 from Editor.PreviewBlock.previewBlock import PreviewBlock
-from config import blockW, blockH, mapScreenX, mapScreenY, screen
+from config import blockW, blockH, mapScreenX, mapScreenY, screen, updateVariables
 from functions import addPos
 
 class Editor():
@@ -45,17 +45,31 @@ class Editor():
         block.update(blocksAround)
     
     def save(self, saveFile):
-        self.map.save(self.origoDot.pos, saveFile)
+        self.map.save(self.origoDot.pos, saveFile, self.players)
+    
+    def emptyAll(self):
+        self.map.blocks.empty()
+        self.players.empty()
     
     def load(self, saveFile):
         path = f"Editor/saveFiles/file{saveFile}.json"
         with open(path, 'r') as file:
             print(f'Loading save file {saveFile}')
             data = json.load(file)
-            self.map.blocks.empty()
-            for pos, mat in data:
-                self.setCurrentBlock(mat)
-                self.placeBlock(pos)
+            self.emptyAll()
+            blocks = data["map"]
+            players = data["players"]
+            blockSize = data["blockSize"]
+            global blockW; global blockH
+            blockW = blockSize[0] # X
+            blockH = blockSize[1] # Y
+            updateVariables()
+            for block in blocks:
+                self.setCurrentBlock(block["mat"])
+                self.placeBlock(block["pos"])
+            for player in players:
+                self.players.add(Player(player["pos"], player["nr"]))
+            
             self.origoDot.pos = (0, 0)
         for block in self.map.blocks:
             self.updateBlock(block, self.checkIfBlocksAround(block.pos))

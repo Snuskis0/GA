@@ -6,6 +6,7 @@ from config import mapX, mapY, screen, mapScreenX, mapScreenY, blockW, blockH
 class Map():
     def __init__(self):
         self.blocks = pygame.sprite.Group()
+        self.items = pygame.sprite.Group()
         self.background = pygame.image.load('Graphics/Backgrounds/bg_grasslands.png')
         self.background = pygame.transform.scale(self.background, (mapScreenX, mapScreenY))
         self.rect = self.background.get_rect(topleft = (mapX, mapY))
@@ -26,11 +27,30 @@ class Map():
             block.rect[1] += add[1]
             block.pos = addPos(block.pos, add)
     
-    # Save and load should be in editor, is in map currently for easier access
-    def save(self, origoPos, saveFile):
+    def save(self, origoPos, saveFile, players):
         path = f"Editor/saveFiles/file{saveFile}.json"
+        relMap = []
+        for block in self.blocks.sprites():
+            blockPos = subPos(block.rect.center, origoPos)
+            relMap.append({
+                "pos": blockPos,
+                "mat": block.__class__.__name__
+            })
+        playerData = []
+        for player in players.sprites():
+            playerPos = subPos(player.rect.center, origoPos)
+            playerData.append({
+                "pos": playerPos,
+                "nr": player.nr
+            })
         with open(path, 'w') as file:
             print(f'Saving to save file {saveFile}')
-            data = [(subPos(block.rect.topleft, origoPos), block.__class__.__name__)
-            for block in self.blocks]
+            data = {
+                "map": relMap,
+                "blockSize": (blockW, blockH),
+                "players": playerData
+            }
+            
+            # data = [(subPos(block.rect.topleft, origoPos), block.__class__.__name__)
+            # for block in self.blocks]
             json.dump(data, file)
