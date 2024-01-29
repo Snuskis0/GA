@@ -1,5 +1,5 @@
 import pygame
-from config import blockW, blockH
+from config import configData
 from functions import howManyTrueIn
 
 class Block(pygame.sprite.Sprite):
@@ -10,7 +10,7 @@ class Block(pygame.sprite.Sprite):
         self.shouldUpdate = shouldUpdate
         self.pos = pos
         self.image = pygame.image.load(f'Graphics/Tiles/{self.filename}')
-        self.image = pygame.transform.scale(self.image,(blockW,blockH))
+        self.image = pygame.transform.scale(self.image,(configData.blockW,configData.blockH))
         self.rect = self.image.get_rect(topleft = self.pos)
     
     def update(self, blocksAround):
@@ -67,4 +67,5 @@ class Block(pygame.sprite.Sprite):
         self.filename = f'{matName}{form}.png'                   
         #updates img of instance
         self.image = pygame.image.load(f'Graphics/Tiles/{self.filename}')
-        self.image = pygame.transform.scale(self.image,(blockW,blockH))
+        self.image = pygame.transform.scale(self.image,(configData.blockW,configData.blockH))
+        self.rect = self.image.get_rect(topleft = self.rect.topleft)

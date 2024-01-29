@@ -6,7 +6,7 @@ from Editor.dict import stringToClassDict
 from Editor.Ui.ui import Ui
 from Editor.Player.player import Player
 from Editor.PreviewBlock.previewBlock import PreviewBlock
-from config import blockW, blockH, mapScreenX, mapScreenY, screen, updateVariables
+from config import configData
 from functions import addPos
 
 class Editor():
@@ -37,7 +37,7 @@ class Editor():
     def render(self):
         self.map.render()
         self.previewBlock.render()
-        self.players.draw(screen)
+        self.players.draw(configData.screen)
         self.origoDot.render()
         self.ui.render()
     
@@ -60,10 +60,8 @@ class Editor():
             blocks = data["map"]
             players = data["players"]
             blockSize = data["blockSize"]
-            global blockW; global blockH
-            blockW = blockSize[0] # X
-            blockH = blockSize[1] # Y
-            updateVariables()
+            configData.setBlockSize(blockSize[0], blockSize[1])
+            configData.updateVariables()
             for block in blocks:
                 self.setCurrentBlock(block["mat"])
                 self.placeBlock(block["pos"])
@@ -99,14 +97,14 @@ class Editor():
     def calcGridCellCorner(self, pos):
         # calcs cornerPos for a given position (check whiteboard for better explaination)
         (x, y) = pos
-        offsetX = self.origoDot.pos[0] % blockW
-        offsetY = self.origoDot.pos[1] % blockH
+        offsetX = self.origoDot.pos[0] % configData.blockW
+        offsetY = self.origoDot.pos[1] % configData.blockH
         # Magic equation, whiteboard (private) explains it roughly
-        return ((int((x-offsetX+blockW)/blockW)-1)*blockW+offsetX, (int((y-offsetY+blockW)/blockH)-1)*blockH+offsetY)
+        return ((int((x-offsetX+configData.blockW)/configData.blockW)-1)*configData.blockW+offsetX, (int((y-offsetY+configData.blockW)/configData.blockH)-1)*configData.blockH+offsetY)
     
     def calcCornerOffset(self):
-        cornerOffsetX = self.origoDot.pos[0] % blockW
-        cornerOffsetY = self.origoDot.pos[1] % blockH
+        cornerOffsetX = self.origoDot.pos[0] % configData.blockW
+        cornerOffsetY = self.origoDot.pos[1] % configData.blockH
         return(cornerOffsetX, cornerOffsetY)
     
     def getBlockAtPos(self, pos):
@@ -139,13 +137,13 @@ class Editor():
         (x, y)= pos
         
         for block in self.map.blocks:
-            if block.rect.collidepoint((x, y-blockH)):
+            if block.rect.collidepoint((x, y-configData.blockH)):
                 up = block
-            if block.rect.collidepoint((x, y+blockH)):
+            if block.rect.collidepoint((x, y+configData.blockH)):
                 down = block
-            if block.rect.collidepoint((x-blockW, y)):
+            if block.rect.collidepoint((x-configData.blockW, y)):
                 left = block
-            if block.rect.collidepoint((x+blockW, y)):
+            if block.rect.collidepoint((x+configData.blockW, y)):
                 right = block
         
         return [up, down, left, right]
@@ -161,7 +159,7 @@ class Editor():
         x = pos[0]
         y = pos[1]
         for block in self.map.blocks:
-            if block.rect.collidepoint((x, y-blockH)):
+            if block.rect.collidepoint((x, y-configData.blockH)):
                 return block
         return False
 
@@ -169,7 +167,7 @@ class Editor():
         x = pos[0]
         y = pos[1]
         for block in self.map.blocks:
-            if block.rect.collidepoint((x, y+blockH)):
+            if block.rect.collidepoint((x, y+configData.blockH)):
                 return block
         return False
 
@@ -177,7 +175,7 @@ class Editor():
         x = pos[0]
         y = pos[1]
         for block in self.map.blocks:
-            if block.rect.collidepoint((x-blockW, y)):
+            if block.rect.collidepoint((x-configData.blockW, y)):
                 return block
         return False
 
@@ -185,7 +183,7 @@ class Editor():
         x = pos[0]
         y = pos[1]
         for block in self.map.blocks:
-            if block.rect.collidepoint((x+blockW, y-blockH)):
+            if block.rect.collidepoint((x+configData.blockW, y-configData.blockH)):
                 return block
         return False
     

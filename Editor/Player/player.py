@@ -1,5 +1,5 @@
 import pygame
-from config import screen, maxFallSpeed, fallSpeedScaler, jumpPower, friction, maxMoveSpeed, minXSpeed, blockW, blockH, doubleJumpCDVal, playerW, playerH
+from config import configData
 from functions import addPos
 
 class Player(pygame.sprite.Sprite):
@@ -7,14 +7,14 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.nr = nr
         self.image = pygame.image.load(f'./Graphics/Player/p{self.nr}_front.png') #72x97 default
-        self.image = pygame.transform.scale(self.image, (playerW, playerH))
+        self.image = pygame.transform.scale(self.image, (configData.playerW, configData.playerH))
         self.imageLink = ""
         self.animationTimer = 0
         self.rect = self.image.get_rect(topleft = startPos)
         self.velocity = (0, 0)
         self.onGround = False
         self.doubleJump = False
-        self.doubleJumpCD = doubleJumpCDVal # Counts down to 0 and lower
+        self.doubleJumpCD = configData.doubleJumpCDVal # Counts down to 0 and lower
         self.frame = 1
         self.prevAttrib = {
             "onGround": self.onGround,
@@ -79,7 +79,7 @@ class Player(pygame.sprite.Sprite):
             if x < 0:
                 self.image = pygame.transform.flip(self.image, True, False)
         
-        self.image = pygame.transform.scale(self.image, (playerW, playerH))
+        self.image = pygame.transform.scale(self.image, (configData.playerW, configData.playerH))
 
     
     def collisionX(self, blocks):
@@ -120,8 +120,8 @@ class Player(pygame.sprite.Sprite):
     def jump(self):
         if self.onGround or (self.doubleJump and self.doubleJumpCD <= 0):
             (x, y) = self.velocity
-            self.velocity = (x, -jumpPower)
-            self.doubleJumpCD = doubleJumpCDVal 
+            self.velocity = (x, -configData.jumpPower)
+            self.doubleJumpCD = configData.doubleJumpCDVal 
             # If double jump
             if self.onGround == False and self.doubleJump == True:
                 self.doubleJump = False
@@ -129,8 +129,8 @@ class Player(pygame.sprite.Sprite):
     
     def friction(self):
         (x, y) = self.velocity
-        newX = abs(x) - friction
-        if abs(x) < abs(friction):
+        newX = abs(x) - configData.friction
+        if abs(x) < abs(configData.friction):
             newX = 0
             # In case friction makes player go other way
         if x > 0:
@@ -142,28 +142,28 @@ class Player(pygame.sprite.Sprite):
     
     def fall(self):
         if not self.onGround:
-            self.velocity = addPos(self.velocity, (0, fallSpeedScaler))
-        if self.velocity[1] >= maxFallSpeed:
-            self.velocity = (self.velocity[0], maxFallSpeed)
+            self.velocity = addPos(self.velocity, (0, configData.fallSpeedScaler))
+        if self.velocity[1] >= configData.maxFallSpeed:
+            self.velocity = (self.velocity[0], configData.maxFallSpeed)
     
     def accel(self, amount):
         self.velocity = addPos(self.velocity, amount)
     
     def limitedAccel(self, x):
         (newX, y) = addPos(self.velocity, (x, 0))
-        if newX < -minXSpeed:
-            if abs(newX) > maxMoveSpeed:
-                newX = -maxMoveSpeed
-        if newX > minXSpeed:
-            if newX > maxMoveSpeed:
-                newX = maxMoveSpeed
+        if newX < -configData.minXSpeed:
+            if abs(newX) > configData.maxMoveSpeed:
+                newX = -configData.maxMoveSpeed
+        if newX > configData.minXSpeed:
+            if newX > configData.maxMoveSpeed:
+                newX = configData.maxMoveSpeed
         self.velocity = (newX, y)
         
     def resetFall(self):
         self.velocity = (self.velocity[0], 0)
     
     def render(self):
-        self.draw(screen)
+        self.draw(configData.screen)
     
     def updatePosX(self):
         self.rect.centerx += self.velocity[0]

@@ -1,5 +1,5 @@
 import pygame
-from config import blockW, blockH, screen
+from config import configData
 from functions import howManyTrueIn
 
 class PreviewBlock(pygame.sprite.Sprite):
@@ -7,12 +7,12 @@ class PreviewBlock(pygame.sprite.Sprite):
         super().__init__()
         self.mat = mat.lower()
         self.image = pygame.image.load(f"./Graphics/Tiles/{self.mat}.png").convert_alpha() 
-        self.image = pygame.transform.scale(self.image, (blockW, blockH))
+        self.image = pygame.transform.scale(self.image, (configData.blockW, configData.blockH))
         self.rect = self.image.get_rect(center = pos)
         self.image.set_alpha(120)
 
     def render(self):
-        screen.blit(self.image, self.rect)
+        configData.screen.blit(self.image, self.rect)
     
     def update(self, pos, mat, blocksAround):
         self.updatePos(pos)
@@ -72,5 +72,6 @@ class PreviewBlock(pygame.sprite.Sprite):
         self.filename = f'{self.mat}{form}.png'                   
         #updates img of instance
         self.image = pygame.image.load(f'Graphics/Tiles/{self.filename}')
-        self.image = pygame.transform.scale(self.image,(blockW,blockH)).convert_alpha()
+        self.image = pygame.transform.scale(self.image,(configData.blockW,configData.blockH)).convert_alpha()
+        self.rect = self.image.get_rect(topleft = self.rect.topleft)
         self.image.set_alpha(120)

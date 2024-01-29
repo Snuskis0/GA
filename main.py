@@ -1,9 +1,9 @@
 # Imports
 import pygame
 import os
-from config import mapScreenX, standardUiPageOne, saveSpeedLimit, screen, blockW, blockH, movementSpeed, maxMoveSpeed, showFPS
 from Editor.editor import Editor
 from functions import howManyTrueIn, addPos
+from config import configData
 
 # This is the working version (Home PC)
 
@@ -25,6 +25,7 @@ keyStates = {}
 # Main
 while running:
     pygame.mouse.get_rel()
+    
     mousePos = pygame.mouse.get_pos()
     # Event loop
     
@@ -45,10 +46,10 @@ while running:
         editor.getPlayer(1).velocity = (0,0)
         
     if keyStates.get(pygame.K_d, False):
-        editor.getPlayer(1).limitedAccel(movementSpeed)
+        editor.getPlayer(1).limitedAccel(configData.movementSpeed)
         
     if keyStates.get(pygame.K_a, False):
-        editor.getPlayer(1).limitedAccel(-movementSpeed)
+        editor.getPlayer(1).limitedAccel(-configData.movementSpeed)
     
     if ((keyStates.get(pygame.K_w, False) or keyStates.get(pygame.K_SPACE, False))):
         editor.getPlayer(1).jump()
@@ -57,29 +58,29 @@ while running:
         if keyStates.get(pygame.K_l, False):
             if keyStates.get(pygame.K_1, False):
                 editor.load(1)
-                saveTicker = saveSpeedLimit
+                saveTicker = configData.saveSpeedLimit
             if keyStates.get(pygame.K_2, False):
                 editor.load(2)
-                saveTicker = saveSpeedLimit
+                saveTicker = configData.saveSpeedLimit
             if keyStates.get(pygame.K_3, False):
                 editor.load(3)
-                saveTicker = saveSpeedLimit
+                saveTicker = configData.saveSpeedLimit
         if keyStates.get(pygame.K_k, False):
             if keyStates.get(pygame.K_1, False):
                 editor.save(1)
-                saveTicker = saveSpeedLimit
+                saveTicker = configData.saveSpeedLimit
             if keyStates.get(pygame.K_2, False):
                 editor.save(2)
-                saveTicker = saveSpeedLimit
+                saveTicker = configData.saveSpeedLimit
             if keyStates.get(pygame.K_3, False):
                 editor.save(3)
-                saveTicker = saveSpeedLimit
+                saveTicker = configData.saveSpeedLimit
         if keyStates.get(pygame.K_c, False) and keyStates.get(pygame.K_LCTRL, False):
             editor.map.blocks.empty()
     
     # Mouse events
     if howManyTrueIn(pygame.mouse.get_pressed()) > 0: # If mouse is pressed at all
-        if pygame.mouse.get_pressed()[0] and editor.getBlockAtPos(editor.calcGridCellCorner(mousePos)) == False and mousePos[0] < mapScreenX:
+        if pygame.mouse.get_pressed()[0] and editor.getBlockAtPos(editor.calcGridCellCorner(mousePos)) == False and mousePos[0] < configData.mapScreenX:
             editor.placeBlock(editor.calcGridCellCorner(mousePos))
       
         if pygame.mouse.get_pressed()[2]:
@@ -101,13 +102,12 @@ while running:
     
     # Events
     editor.update(mousePos)
-    if showFPS:
+    if configData.showFPS:
         print(int(clock.get_fps()))
-    print(blockW, blockH)
     
     # Drawing order
     editor.render()
-    pygame.draw.circle(screen, 'black', mousePos, 3)
+    pygame.draw.circle(configData.screen, 'black', mousePos, 3)
 
     # EndVariables
     

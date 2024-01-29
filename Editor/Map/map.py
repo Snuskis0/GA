@@ -1,19 +1,19 @@
 import pygame
 import json
 from functions import addPos, subPos, multiplyPos
-from config import mapX, mapY, screen, mapScreenX, mapScreenY, blockW, blockH
+from config import configData
 
 class Map():
     def __init__(self):
         self.blocks = pygame.sprite.Group()
         self.items = pygame.sprite.Group()
         self.background = pygame.image.load('Graphics/Backgrounds/bg_grasslands.png')
-        self.background = pygame.transform.scale(self.background, (mapScreenX, mapScreenY))
-        self.rect = self.background.get_rect(topleft = (mapX, mapY))
+        self.background = pygame.transform.scale(self.background, (configData.mapScreenX, configData.mapScreenY))
+        self.rect = self.background.get_rect(topleft = (configData.mapX, configData.mapY))
     
     def render(self):
-        screen.blit(self.background, self.rect)
-        self.blocks.draw(screen)
+        configData.screen.blit(self.background, self.rect)
+        self.blocks.draw(configData.screen)
     
     def multiplyPosAllBlocks(self, factor):
         for block in self.blocks:
@@ -47,7 +47,7 @@ class Map():
             print(f'Saving to save file {saveFile}')
             data = {
                 "map": relMap,
-                "blockSize": (blockW, blockH),
+                "blockSize": (configData.blockW, configData.blockH),
                 "players": playerData
             }
             

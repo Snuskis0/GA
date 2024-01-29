@@ -1,5 +1,5 @@
 import pygame
-from config import origoDotRadius, screen
+from config import configData
 from functions import addPos
 
 class OrigoDot():
@@ -7,7 +7,7 @@ class OrigoDot():
         self.pos = (0,0)
     
     def render(self):
-        pygame.draw.circle(screen, 'black', self.pos, origoDotRadius)
+        pygame.draw.circle(configData.screen, 'black', self.pos, configData.origoDotRadius)
     
     def updatePos(self, add):
         self.pos = addPos(self.pos, add)
