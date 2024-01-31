@@ -22,7 +22,7 @@ class Editor():
     
     def update(self, mousePos):
         for player in self.players.sprites():
-            player.update(self.map.blocks)
+            player.update(self.getCloseBlocks(player.nr))
         previewBlockPos = self.calcGridCellCorner(mousePos)
         self.previewBlock.update(previewBlockPos, self.currentBlock, self.checkIfBlocksAround(previewBlockPos))
     
@@ -67,10 +67,21 @@ class Editor():
                 self.placeBlock(block["pos"])
             for player in players:
                 self.players.add(Player(player["pos"], player["nr"]))
-            
-            self.origoDot.pos = (0, 0)
         for block in self.map.blocks:
             self.updateBlock(block, self.checkIfBlocksAround(block.pos))
+        self.origoDot.pos= (0, 0)
+    
+    def getCloseBlocks(self, playerNum):
+        foundBlocks = pygame.sprite.Group()
+        playerCoords = (playerX, playerY) = self.getPlayer(playerNum).rect.center
+        # Bounds to check for blocks in
+        (lowerX, upperX) = (playerX - 2*configData.blockW, playerX + 2*configData.blockW)
+        (lowerY, upperY) = (playerY - 2*configData.blockH, playerY + 2*configData.blockH)
+        
+        for block in self.map.blocks.sprites():
+            if (lowerX <= block.rect.centerx <= upperX) and (lowerY <= block.rect.centery <= upperY):
+                foundBlocks.add(block)
+        return foundBlocks
     
     def setBgSize(map, size):
         map.background = pygame.transform.scale(map.background, size)

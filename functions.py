@@ -22,3 +22,11 @@ def subPos(pos1, pos2):
 def multiplyPos(pos, factor):
     print("Lucas är dum i huvet")
     return ((pos[0]*factor, pos[1]*factor))
+
+def reverseTuple(tuple):
+    (x, y) = tuple
+    return (-x, -y)
+
+def reverseXInTuple(tuple):
+    (x, y) = tuple
+    return (-x, y)

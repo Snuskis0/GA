@@ -44,15 +44,30 @@ while running:
     if keyStates.get(pygame.K_r, False):
         editor.getPlayer(1).rect.center = pygame.mouse.get_pos()
         editor.getPlayer(1).velocity = (0,0)
-        
-    if keyStates.get(pygame.K_d, False):
-        editor.getPlayer(1).limitedAccel(configData.movementSpeed)
-        
-    if keyStates.get(pygame.K_a, False):
-        editor.getPlayer(1).limitedAccel(-configData.movementSpeed)
     
-    if ((keyStates.get(pygame.K_w, False) or keyStates.get(pygame.K_SPACE, False))):
-        editor.getPlayer(1).jump()
+    # On ground   
+    
+    if editor.getPlayer(1).onGround:
+        if keyStates.get(pygame.K_d, False):
+            editor.getPlayer(1).limitedAccelAdd(configData.movementSpeed)
+        if keyStates.get(pygame.K_a, False):
+            editor.getPlayer(1).limitedAccelAdd(-configData.movementSpeed)
+    else:
+        if keyStates.get(pygame.K_d, False):
+            editor.getPlayer(1).limitedAccelAdd(configData.airStrafeSpeed)
+            print("strafing right")
+        elif keyStates.get(pygame.K_a, False):
+            editor.getPlayer(1).limitedAccelAdd(-configData.airStrafeSpeed)
+            print("strafing left")
+    
+    print(editor.getPlayer(1).facingWall(editor.getCloseBlocks(1)))
+    
+    if not editor.getPlayer(1).facingWall(editor.getCloseBlocks(1)):
+        if (keyStates.get(pygame.K_w, False) or keyStates.get(pygame.K_SPACE, False)):
+            editor.getPlayer(1).jump()
+    else:
+        if (keyStates.get(pygame.K_w, False) or keyStates.get(pygame.K_SPACE, False)):
+            editor.getPlayer(1).wallJump()
         
     if saveTicker == 0:
         if keyStates.get(pygame.K_l, False):

@@ -1,6 +1,6 @@
 import pygame
 from config import configData
-from functions import addPos
+from functions import addPos, reverseXInTuple
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, startPos, nr):
@@ -24,7 +24,7 @@ class Player(pygame.sprite.Sprite):
     def update(self, mapBlocks):
         self.doubleJumpCD -= 1
         self.animationTimer += 1
-        self.fall()
+        self.fall(mapBlocks)
         self.friction()
         self.updatePosX()
         self.collisionX(mapBlocks)
@@ -33,6 +33,31 @@ class Player(pygame.sprite.Sprite):
         self.updateOnGround(mapBlocks)
         self.animationHandler()
         self.updateAnimation()
+    
+    def facingWall(self, blocks):
+        (x, y) = velocity = self.velocity
+        if x == 0:
+            velocity = (1, y)
+        # 1 and 2 for different directions
+        predictedPos1 = addPos(velocity, self.rect.topleft)
+        predictedPos2 = addPos(reverseXInTuple(velocity), self.rect.topleft)
+        futureRect1 = pygame.rect.Rect(predictedPos1, (configData.playerW, configData.playerH))
+        futureRect2 = pygame.rect.Rect(predictedPos2, (configData.playerW, configData.playerH))
+        for block in blocks.sprites():
+            if futureRect1.colliderect(block.rect):
+                return True
+            elif futureRect2.colliderect(block.rect):
+                return True
+        return False
+    
+    def wallJump(self):
+        if self.doubleJumpCD <= 0:
+            if self.velocity[0] < 0:
+                self.velocity = (configData.maxMoveSpeed, -configData.jumpPower)
+            elif self.velocity[0] > 0:
+                self.velocity = (-configData.maxMoveSpeed, -configData.jumpPower)
+            self.doubleJumpCD = configData.doubleJumpCDVal
+            self.doubleJump = True
     
     def animationHandler(self):
         # Checks different critera; Determines what frame should be used;
@@ -81,7 +106,6 @@ class Player(pygame.sprite.Sprite):
         
         self.image = pygame.transform.scale(self.image, (configData.playerW, configData.playerH))
 
-    
     def collisionX(self, blocks):
         (x, y) = self.velocity
         for block in blocks.sprites():
@@ -128,28 +152,53 @@ class Player(pygame.sprite.Sprite):
                 
     
     def friction(self):
-        (x, y) = self.velocity
-        newX = abs(x) - configData.friction
-        if abs(x) < abs(configData.friction):
-            newX = 0
-            # In case friction makes player go other way
-        if x > 0:
-            self.velocity = (newX, y)
-        elif x < 0:
-            self.velocity = (-newX, y)
+        if self.onGround:    
+            (x, y) = self.velocity
+            newX = abs(x) - configData.friction
+            if abs(x) < abs(configData.friction):
+                newX = 0
+                # In case friction makes player go other way
+            if x > 0:
+                self.velocity = (newX, y)
+            elif x < 0:
+                self.velocity = (-newX, y)
+            else:
+                self.velocity = (0, y)
         else:
-            self.velocity = (0, y)
+            (x, y) = self.velocity
+            newX = abs(x) - configData.airResistance
+            if abs(x) < abs(configData.airResistance):
+                newX = 0
+                # In case friction makes player go other way
+            if x > 0:
+                self.velocity = (newX, y)
+            elif x < 0:
+                self.velocity = (-newX, y)
+            else:
+                self.velocity = (0, y)
     
-    def fall(self):
+    def fall(self, blocks):
         if not self.onGround:
             self.velocity = addPos(self.velocity, (0, configData.fallSpeedScaler))
         if self.velocity[1] >= configData.maxFallSpeed:
-            self.velocity = (self.velocity[0], configData.maxFallSpeed)
+            if not self.facingWall(blocks):
+                self.velocity = (self.velocity[0], configData.maxFallSpeed)
+            else:
+                self.velocity = (self.velocity[0], configData.maxWallSlide)
     
     def accel(self, amount):
         self.velocity = addPos(self.velocity, amount)
     
-    def limitedAccel(self, x):
+    def limitedAccelSet(self, x):
+        if x < -configData.minXSpeed:
+            if abs(x) > configData.maxMoveSpeed:
+                x = -configData.maxMoveSpeed
+        if x > configData.minXSpeed:
+            if x > configData.maxMoveSpeed:
+                x = configData.maxMoveSpeed
+        self.velocity = (x, self.velocity[0])
+    
+    def limitedAccelAdd(self, x):
         (newX, y) = addPos(self.velocity, (x, 0))
         if newX < -configData.minXSpeed:
             if abs(newX) > configData.maxMoveSpeed:

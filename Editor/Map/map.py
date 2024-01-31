@@ -31,7 +31,7 @@ class Map():
         path = f"Editor/saveFiles/file{saveFile}.json"
         relMap = []
         for block in self.blocks.sprites():
-            blockPos = subPos(block.rect.center, origoPos)
+            blockPos = subPos(block.rect.topleft, origoPos)
             relMap.append({
                 "pos": blockPos,
                 "mat": block.__class__.__name__

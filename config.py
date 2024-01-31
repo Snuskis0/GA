@@ -5,8 +5,8 @@ class ConfigData():
     def __init__(self):
         # Screen
         self.editorScreenX = 400
-        self.mapScreenX = round(1920/2)-self.editorScreenX # 1024 Default
-        self.mapScreenY = round(1080/2) # 512 Default
+        self.mapScreenX = round(1920/1.5)-self.editorScreenX # 1024 Default
+        self.mapScreenY = round(1080/1.5) # 512 Default
         self.editorScreenY = self.mapScreenY
         self.screen = pygame.display.set_mode((self.mapScreenX+self.editorScreenX, self.mapScreenY))
 
@@ -35,7 +35,9 @@ class ConfigData():
         self.maxFallSpeed = 50 * self.blockH / 70
         self.jumpPower = 15 * self.blockH / 70
         self.movementSpeed = 2 * self.blockH / 70
+        self.airStrafeSpeed = self.movementSpeed *0.9
         self.friction = 1 * self.blockW / 70
+        self.airResistance = self.friction * 0.25
         self.maxMoveSpeed = 8 * self.blockW / 70
         self.minXSpeed = 1 / 4 * (self.blockW / 70)
         self.doubleJumpCDVal = 15
@@ -47,7 +49,9 @@ class ConfigData():
         self.maxFallSpeed = 50 * self.blockH / 70
         self.jumpPower = 15 * self.blockH / 70
         self.movementSpeed = 2 * self.blockH / 70
+        self.airStrafeSpeed = self.movementSpeed *0.9
         self.friction = 1 * self.blockW / 70
+        self.airResistance = self.friction * 0.25
         self.maxMoveSpeed = 8 * self.blockW / 70
         self.minXSpeed = 1 / 4 * (self.blockW / 70)
         self.doubleJumpCDVal = 15
