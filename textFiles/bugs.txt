@@ -1,2 +1,1 @@
-onGround broke ONCE, can't replicate it (always True)
-    Fixed, had to do with floor checking on only same x level (let me jump as long as player was on same x as other block)
+1. Whenever player slides on wall, img flipes every 2 squares. frame1: xSpeed = 0; frame2: xSpeed > 0

@@ -1,4 +1,5 @@
 import pygame
+import math
 from config import configData
 from functions import addPos, reverseXInTuple
 
@@ -36,13 +37,17 @@ class Player(pygame.sprite.Sprite):
     
     def facingWall(self, blocks):
         (x, y) = velocity = self.velocity
+        x = math.ceil(abs(x)) # abs doesn't matter, I look both ways anyways
+        y = math.ceil(abs(y))
+        # print(x, y)
         if x == 0:
             velocity = (1, y)
         # 1 and 2 for different directions
         predictedPos1 = addPos(velocity, self.rect.topleft)
         predictedPos2 = addPos(reverseXInTuple(velocity), self.rect.topleft)
-        futureRect1 = pygame.rect.Rect(predictedPos1, (configData.playerW, configData.playerH))
-        futureRect2 = pygame.rect.Rect(predictedPos2, (configData.playerW, configData.playerH))
+        # Margin of 3 pixels so it's not super punishing, -3 for now
+        futureRect1 = pygame.rect.Rect(predictedPos1, (configData.playerW+2, configData.playerH-3))
+        futureRect2 = pygame.rect.Rect(predictedPos2, (configData.playerW+2, configData.playerH-3))
         for block in blocks.sprites():
             if futureRect1.colliderect(block.rect):
                 return True
@@ -61,7 +66,6 @@ class Player(pygame.sprite.Sprite):
     
     def animationHandler(self):
         # Checks different critera; Determines what frame should be used;
-        
         resetBool = False
         
         if self.prevAttrib["onGround"] != self.onGround:
@@ -96,13 +100,16 @@ class Player(pygame.sprite.Sprite):
             if self.frame >= 10:
                 self.image = pygame.image.load(f'./Graphics/Player/p{self.nr}_walk/PNG/p{self.nr}_walk{self.frame}.png')
             
+            
             if x < 0: # Flip if left
                 self.image = pygame.transform.flip(self.image, True, False)
-        # Jumping (up)
+        # Airtime
         if not self.onGround:
             self.image = pygame.image.load(f'./Graphics/Player/p{self.nr}_jump.png')
-            if x < 0:
+            # x = 0 och lite mer, skiftar och kallas därför varannan
+            if x < 0 :
                 self.image = pygame.transform.flip(self.image, True, False)
+                #This is called when it shouldn't be, causing img to flip while wallslideing
         
         self.image = pygame.transform.scale(self.image, (configData.playerW, configData.playerH))
 
@@ -181,10 +188,9 @@ class Player(pygame.sprite.Sprite):
         if not self.onGround:
             self.velocity = addPos(self.velocity, (0, configData.fallSpeedScaler))
         if self.velocity[1] >= configData.maxFallSpeed:
-            if not self.facingWall(blocks):
-                self.velocity = (self.velocity[0], configData.maxFallSpeed)
-            else:
-                self.velocity = (self.velocity[0], configData.maxWallSlide)
+            self.velocity = (self.velocity[0], configData.maxFallSpeed)
+        if self.facingWall(blocks) and self.velocity[1] >= configData.maxWallSlide:
+            self.velocity = (self.velocity[0], configData.maxWallSlide)
     
     def accel(self, amount):
         self.velocity = addPos(self.velocity, amount)

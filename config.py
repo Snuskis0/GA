@@ -3,12 +3,21 @@ import pygame
 # Class that contains ALL config settings, SOLVES SO MANY PROBLEMS!!!
 class ConfigData():
     def __init__(self):
+        # Globals
+        self.gameState = "editing"
+        self.gameStateTextCoords = (10, 20)
+        self.gameStateSwitchSpeed = 30
+        self.gameStateSwitchSpeedCounter = 0
+        
         # Screen
         self.editorScreenX = 400
         self.mapScreenX = round(1920/1.5)-self.editorScreenX # 1024 Default
         self.mapScreenY = round(1080/1.5) # 512 Default
         self.editorScreenY = self.mapScreenY
         self.screen = pygame.display.set_mode((self.mapScreenX+self.editorScreenX, self.mapScreenY))
+        self.camSens = 300
+        self.camSensX = self.camSens
+        self.camSensY = self.camSens / 2
 
         # Editor
         self.mapX = 0
@@ -33,9 +42,10 @@ class ConfigData():
         # Player
         self.fallSpeedScaler = 0.8 * self.blockH / 70
         self.maxFallSpeed = 50 * self.blockH / 70
+        self.maxWallSlide = self.maxFallSpeed * 0.1
         self.jumpPower = 15 * self.blockH / 70
         self.movementSpeed = 2 * self.blockH / 70
-        self.airStrafeSpeed = self.movementSpeed *0.9
+        self.airStrafeSpeed = self.movementSpeed *0.4 # 0.4 is lowest that "works"
         self.friction = 1 * self.blockW / 70
         self.airResistance = self.friction * 0.25
         self.maxMoveSpeed = 8 * self.blockW / 70
@@ -47,9 +57,10 @@ class ConfigData():
     def updateVariables(self):
         self.fallSpeedScaler = 0.8 * self.blockH / 70
         self.maxFallSpeed = 50 * self.blockH / 70
+        self.maxWallSlide = self.maxFallSpeed * 0.1
         self.jumpPower = 15 * self.blockH / 70
         self.movementSpeed = 2 * self.blockH / 70
-        self.airStrafeSpeed = self.movementSpeed *0.9
+        self.airStrafeSpeed = self.movementSpeed *0.4 # 0.4 is lowest that "works"
         self.friction = 1 * self.blockW / 70
         self.airResistance = self.friction * 0.25
         self.maxMoveSpeed = 8 * self.blockW / 70

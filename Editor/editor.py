@@ -18,6 +18,7 @@ class Editor():
         self.players = pygame.sprite.Group()
         for i in range(1):
             self.players.add(Player(((i+1)*100, 100), i+1))
+        self.camFollowsPlayer()
         self.previewBlock = PreviewBlock((0, 0), self.currentBlock)
     
     def update(self, mousePos):
@@ -25,6 +26,31 @@ class Editor():
             player.update(self.getCloseBlocks(player.nr))
         previewBlockPos = self.calcGridCellCorner(mousePos)
         self.previewBlock.update(previewBlockPos, self.currentBlock, self.checkIfBlocksAround(previewBlockPos))
+    
+    def camFollowsPlayer(self):
+        # Check if player is approaching any walls, if close: Move all except players
+        # By default follows player 1 to avoid camera jumps between players moving close to different walls
+        player = self.getPlayer(1)
+        (x, y) = player.rect.center
+        
+        # Checks left wall
+        if x - configData.camSensX <= 0:
+            self.camLogic(((x - configData.camSensX)*-1, 0))
+        # Checks right wall
+        elif x + configData.camSensX >= configData.mapScreenX:
+            self.camLogic(((x+configData.camSensX-configData.mapScreenX)*-1, 0))
+        # Checks top wall
+        if y - configData.camSensY <= 0:
+            self.camLogic((0, (y - configData.camSensY)*-1))
+        # Checks bottom wall
+        elif y + configData.camSensY >= configData.mapScreenY:
+            self.camLogic((0, (y+configData.camSensY-configData.mapScreenY)*-1))
+    
+    def camLogic(self, pan):
+        self.map.addPosAllBlocks(pan)
+        self.origoDot.updatePos(pan)
+        for player in self.players.sprites():
+            player.move(pan)
     
     def getPlayer(self, nr):
         try: 
