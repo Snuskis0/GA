@@ -78,7 +78,13 @@ while running:
             if (keyStates.get(pygame.K_w, False) or keyStates.get(pygame.K_SPACE, False)):
                 editor.getPlayer(1).wallJump()
         editor.camFollowsPlayer()
+        
+        editor.updateAll(mousePos)
+        if editor.detectWin():
+            print("You won!")
+            running = False
     # End of playing
+
     
     # Start of editing
     if configData.gameState == "editing":
@@ -130,11 +136,14 @@ while running:
                     for block in editor.ui.pages[editor.ui.currentPage]:
                         if block.checkIfHovered():
                             editor.setCurrentBlock(block.mat)
+                    for page in editor.ui.pageSelectors.sprites():
+                        if page.checkIfHovered():
+                            editor.ui.currentPage = page.id
+        editor.updateEditor(mousePos)
     # End of editing
 
     # Events
     
-    editor.update(mousePos)
     if configData.showFPS:
         print(int(clock.get_fps()))
     

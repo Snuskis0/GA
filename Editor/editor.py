@@ -21,11 +21,23 @@ class Editor():
         self.camFollowsPlayer()
         self.previewBlock = PreviewBlock((0, 0), self.currentBlock)
     
-    def update(self, mousePos):
+    def updateEditor(self, mousePos):
+        previewBlockPos = self.calcGridCellCorner(mousePos)
+        self.previewBlock.update(previewBlockPos, self.currentBlock, self.checkIfBlocksAround(previewBlockPos))
+    
+    def updateAll(self, mousePos):
         for player in self.players.sprites():
             player.update(self.getCloseBlocks(player.nr))
         previewBlockPos = self.calcGridCellCorner(mousePos)
         self.previewBlock.update(previewBlockPos, self.currentBlock, self.checkIfBlocksAround(previewBlockPos))
+        self.map.animate()
+    
+    def detectWin(self):
+        for player in self.getAllPlayers():
+            for pole in self.map.finishPoles:
+                if player.rect.colliderect(pole.rect):
+                    return True
+        return False
     
     def camFollowsPlayer(self):
         # Check if player is approaching any walls, if close: Move all except players
@@ -47,7 +59,7 @@ class Editor():
             self.camLogic((0, (y+configData.camSensY-configData.mapScreenY)*-1))
     
     def camLogic(self, pan):
-        self.map.addPosAllBlocks(pan)
+        self.map.addPosAllContent(pan)
         self.origoDot.updatePos(pan)
         for player in self.players.sprites():
             player.move(pan)

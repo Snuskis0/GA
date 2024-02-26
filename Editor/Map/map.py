@@ -2,6 +2,7 @@ import pygame
 import json
 from functions import addPos, subPos, multiplyPos
 from config import configData
+from Editor.Map.FinishPole.finishPole import FinishPole
 
 class Map():
     def __init__(self):
@@ -10,10 +11,22 @@ class Map():
         self.background = pygame.image.load('Graphics/Backgrounds/bg_grasslands.png')
         self.background = pygame.transform.scale(self.background, (configData.mapScreenX, configData.mapScreenY))
         self.rect = self.background.get_rect(topleft = (configData.mapX, configData.mapY))
-    
+        self.finishPoles = pygame.sprite.Group()
+        self.finishPoles.add(FinishPole((420, 210), "Red"))
+        
     def render(self):
         configData.screen.blit(self.background, self.rect)
         self.blocks.draw(configData.screen)
+        self.finishPoles.draw(configData.screen)
+    
+    def animate(self):
+        for pole in self.finishPoles.sprites():
+            pole.update()
+    
+    def addPosAllContent(self, add):
+        self.addPosAllBlocks(add)
+        for pole in self.finishPoles.sprites():
+            pole.rect.center = addPos(pole.rect.center, add)
     
     def multiplyPosAllBlocks(self, factor):
         for block in self.blocks:

@@ -5,7 +5,11 @@ class MatCell(pygame.sprite.Sprite):
     def __init__(self, pos, mat):
         super().__init__()
         self.pos = pos
-        self.mat = mat.lower()
+        if mat[:4] == "flag":
+            self.mat = mat    
+        else:
+            self.mat = mat.lower()
+        # self.mat = mat.lower()
         self.image = pygame.image.load(f"./Graphics/UI_Tiles/{self.mat}.png") 
         self.image = pygame.transform.scale(self.image, (configData.UIblockW-20, configData.UIblockH-20))
         self.rect = self.image.get_rect(center = self.pos)

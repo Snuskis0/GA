@@ -27,10 +27,12 @@ class ConfigData():
         self.placeSpeedLimit = 100 #milliseconds
         self.standardUiPageOne = ["Grass", "Dirt", "Castle", "Sand", "Snow", "Stone", "Tundra", "Cake", "Choco"]
         self.mainBlockLibrary = ["Grass", "Dirt", "Castle", "Sand", "Snow", "Stone", "Tundra", "Cake", "Choco"]
+        self.flagpoleLibrary = ["flagBlue", "flagGreen", "flagRed", "flagYellow"]
 
         # Map
         self.saveSpeedLimit = 20
         self.origoDotRadius = 5
+        self.flagAnimationSpeed = 10
 
         # Ui
         self.blockSelectorXAmount = 3
