@@ -1,6 +1,6 @@
 The whole project is written in python, with pygame for game logic.
 Standard followed: 
-  variables: camelCase
+	variables: camelCase
   constants: FULL_CAPS
   private variables: camelCase, no underscores (except built in varaibles)
   class: PascalCase
