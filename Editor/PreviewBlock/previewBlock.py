@@ -20,7 +20,10 @@ class PreviewBlock(pygame.sprite.Sprite):
         self.updateImg(blocksAround)
     
     def updateMat(self, mat):
-        self.mat = mat.lower()
+        if mat[:4] == "flag":
+            self.mat = mat
+        else:
+            self.mat = mat.lower()
     
     def updatePos(self, pos):
         self.rect.topleft = pos
@@ -71,7 +74,10 @@ class PreviewBlock(pygame.sprite.Sprite):
         
         self.filename = f'{self.mat}{form}.png'                   
         #updates img of instance
-        self.image = pygame.image.load(f'Graphics/Tiles/{self.filename}')
+        if self.filename[:4] == "flag":
+            self.image = pygame.image.load(f'Graphics/Items/{self.filename}')
+        else:
+            self.image = pygame.image.load(f'Graphics/Tiles/{self.filename}')    
         self.image = pygame.transform.scale(self.image,(configData.blockW,configData.blockH)).convert_alpha()
         self.rect = self.image.get_rect(topleft = self.rect.topleft)
         self.image.set_alpha(120)

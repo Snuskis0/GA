@@ -32,8 +32,7 @@ class Ui(pygame.sprite.Sprite):
         pygame.draw.line(configData.screen, 'Black', self.pos, self.barrierBottomPos, 1)
         self.pageSelectors.draw(configData.screen)
         if self.pages != []:
-            for page in self.pages:
-                page.draw(configData.screen)
+            self.pages[self.currentPage].draw(configData.screen)
     
     def addPageSelectors(self):
         for i in range(5):
