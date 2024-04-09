@@ -39,7 +39,7 @@ class ConfigData():
         self.blockSelectorYAmount = 3
         self.UIblockW = 80
         self.UIblockH = 80
-        self.showFPS = False
+        self.showFPS = True
         
         # Player
         self.fallSpeedScaler = 0.8 * self.blockH / 70
