@@ -27,5 +27,7 @@ stringToClassDict = {
     "Cake": Cake,
     "cake": Cake,
     "Choco": Choco,
-    "choco": Choco
+    "choco": Choco,
 }
+
+# Rethink how to do this since flags don't have a seperate class for themselves based on colour5
