@@ -90,7 +90,7 @@ class Editor():
         self.players.empty()
     
     def load(self, saveFile):
-        path = f"Editor/saveFiles/file{saveFile}.json"
+        path = f"Editor/SaveFiles/file{saveFile}.json"
         with open(path, 'r') as file:
             print(f'Loading save file {saveFile}')
             data = json.load(file)

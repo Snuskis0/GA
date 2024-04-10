@@ -41,7 +41,7 @@ class Map():
             block.pos = addPos(block.pos, add)
     
     def save(self, origoPos, saveFile, players):
-        path = f"Editor/saveFiles/file{saveFile}.json"
+        path = f"Editor/SaveFiles/file{saveFile}.json"
         relMap = []
         for block in self.blocks.sprites():
             blockPos = subPos(block.rect.topleft, origoPos)

@@ -12,7 +12,7 @@ class ConfigData():
         # Screen
         self.editorScreenX = 400
         self.mapScreenX = round(1920/1.5)-self.editorScreenX # 1024 Default
-        self.mapScreenY = round(1080/1.5) # 512 Default
+        self.mapScreenY = round(1080/1.2) # 512 Default
         self.editorScreenY = self.mapScreenY
         self.screen = pygame.display.set_mode((self.mapScreenX+self.editorScreenX, self.mapScreenY))
         self.camSens = 300
